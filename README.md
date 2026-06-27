@@ -32,5 +32,5 @@ transitions; current status, ghost detection, time-to-response, and the Sankey a
 .NET 8 · C# · EF Core + SQLite · System.CommandLine + Spectre.Console (CLI) · Avalonia (GUI)
 
 ## Status
-Design phase. The `src/main/java/Application.java` file is the original Java prototype and
-is **superseded** by this design — kept only for reference until the C# core lands.
+Design phase. The original Java/Maven prototype has been removed; implementation begins
+with the C# `Applied.Core` per [docs/ROADMAP.md](docs/ROADMAP.md) (milestone M0).
