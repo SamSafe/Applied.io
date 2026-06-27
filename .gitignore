@@ -34,5 +34,26 @@ build/
 ### VS Code ###
 .vscode/
 
+### JetBrains (Rider/IntelliJ) ###
+.idea/
+
 ### Mac OS ###
 .DS_Store
+
+### .NET ###
+bin/
+obj/
+*.user
+*.suo
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+project.lock.json
+artifacts/
+.vs/
+
+### SQLite (local app database) ###
+*.db
+*.db-shm
+*.db-wal
