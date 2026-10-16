@@ -1,0 +1,406 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-16T15:03:02+00:00",
+  "title": "Design System: Applied",
+  "extensions": {
+    "colorMeta": {
+      "livery": {
+        "role": "primary",
+        "displayName": "Livery Spruce",
+        "canonical": "oklch(31.8% 0.054 170.0)",
+        "tonalRamp": [
+          "#000f09",
+          "#022c20",
+          "#1e493b",
+          "#3d6859",
+          "#5c8878",
+          "#7daa99",
+          "#a5d3c2",
+          "#ccfbe9"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Label Ground",
+        "canonical": "oklch(97.5% 0.004 121.6)",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#242422",
+          "#3f403e",
+          "#5d5e5b",
+          "#7d7e7b",
+          "#9e9f9c",
+          "#c7c8c5",
+          "#eeefec"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(20.8% 0.005 248.1)",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#222426",
+          "#3e4042",
+          "#5b5e60",
+          "#7b7d80",
+          "#9c9fa1",
+          "#c5c8ca",
+          "#eceff2"
+        ]
+      },
+      "scan": {
+        "role": "secondary",
+        "displayName": "Scan Yellow",
+        "canonical": "oklch(86.1% 0.163 87.1)",
+        "tonalRamp": [
+          "#120a00",
+          "#2f2200",
+          "#503d07",
+          "#745a11",
+          "#9b780e",
+          "#c39816",
+          "#f5bf21",
+          "#ffedc5"
+        ]
+      },
+      "stage-applied": {
+        "role": "tertiary",
+        "displayName": "Applied Slate",
+        "canonical": "oklch(54.4% 0.023 250.6)",
+        "tonalRamp": [
+          "#050c15",
+          "#1c252f",
+          "#37414c",
+          "#545f6a",
+          "#737f8b",
+          "#94a0ad",
+          "#bdc9d6",
+          "#e3f0fe"
+        ]
+      },
+      "stage-screen": {
+        "role": "tertiary",
+        "displayName": "Screen Teal",
+        "canonical": "oklch(54.8% 0.092 187.1)",
+        "tonalRamp": [
+          "#000f0d",
+          "#032b27",
+          "#0a4a45",
+          "#156c65",
+          "#288f86",
+          "#51b1a8",
+          "#7cdbd1",
+          "#b7fff6"
+        ]
+      },
+      "stage-interview": {
+        "role": "tertiary",
+        "displayName": "Interview Blue",
+        "canonical": "oklch(52.8% 0.180 262.6)",
+        "tonalRamp": [
+          "#000038",
+          "#001a61",
+          "#00319c",
+          "#2054c1",
+          "#4076e6",
+          "#6a9cfc",
+          "#acc8fb",
+          "#e7effe"
+        ]
+      },
+      "stage-final": {
+        "role": "tertiary",
+        "displayName": "Final Violet",
+        "canonical": "oklch(51.9% 0.192 294.3)",
+        "tonalRamp": [
+          "#0f0029",
+          "#2c045d",
+          "#4c0f97",
+          "#683abc",
+          "#875ee1",
+          "#a687f8",
+          "#cabcfd",
+          "#efecff"
+        ]
+      },
+      "stage-offer": {
+        "role": "tertiary",
+        "displayName": "Offer Green",
+        "canonical": "oklch(55.9% 0.135 153.1)",
+        "tonalRamp": [
+          "#001004",
+          "#022d14",
+          "#0a4d28",
+          "#156f3d",
+          "#289455",
+          "#51b675",
+          "#7ce19d",
+          "#c9fed7"
+        ]
+      },
+      "stage-rejected": {
+        "role": "tertiary",
+        "displayName": "Rejected Brick",
+        "canonical": "oklch(53.9% 0.139 34.2)",
+        "tonalRamp": [
+          "#200000",
+          "#460b01",
+          "#741a04",
+          "#9c3821",
+          "#c15a42",
+          "#e77b62",
+          "#fdb2a0",
+          "#fee9e4"
+        ]
+      },
+      "stage-withdrawn": {
+        "role": "tertiary",
+        "displayName": "Withdrew Khaki",
+        "canonical": "oklch(59.1% 0.047 80.8)",
+        "tonalRamp": [
+          "#130900",
+          "#302106",
+          "#4c3d22",
+          "#6b5b3f",
+          "#8c7b5e",
+          "#ae9c7e",
+          "#d7c5a6",
+          "#ffeccc"
+        ]
+      },
+      "stage-ghosted": {
+        "role": "tertiary",
+        "displayName": "Ghost Fog",
+        "canonical": "oklch(70.3% 0.011 248.0)",
+        "tonalRamp": [
+          "#080c10",
+          "#202529",
+          "#3b4045",
+          "#595e64",
+          "#787e84",
+          "#999fa5",
+          "#c2c8ce",
+          "#e9eff6"
+        ]
+      },
+      "danger": {
+        "role": "neutral",
+        "displayName": "Danger",
+        "canonical": "oklch(49.5% 0.156 32.5)",
+        "tonalRamp": [
+          "#200000",
+          "#470901",
+          "#761705",
+          "#a32f1a",
+          "#c9523c",
+          "#ef755d",
+          "#feb1a0",
+          "#ffe9e4"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles; detail label company name at 1.6rem."
+      },
+      "status": {
+        "displayName": "Status",
+        "purpose": "The status word leading the detail panel."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Company names in rows; section titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All readable text; tabular figures for data."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field labels, chips, axis ticks."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "References and email addresses only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "panel",
+        "value": "0 1px 2px rgb(14 59 46 / 0.06), 0 12px 32px -8px rgb(14 59 46 / 0.14)",
+        "purpose": "Detail and add panels floating beside the list."
+      },
+      {
+        "name": "pop",
+        "value": "0 2px 4px rgb(14 59 46 / 0.08), 0 16px 40px -10px rgb(14 59 46 / 0.24)",
+        "purpose": "Menus."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Every transition and entrance."
+      },
+      {
+        "name": "state",
+        "value": "150ms",
+        "purpose": "Hover, focus and colour changes."
+      },
+      {
+        "name": "unfold",
+        "value": "200ms",
+        "purpose": "Inline forms opening under an action."
+      },
+      {
+        "name": "stamp",
+        "value": "320ms",
+        "purpose": "A history step arriving while the panel is open."
+      },
+      {
+        "name": "scan-ping",
+        "value": "1.4s × 2",
+        "purpose": "An unseen node announcing itself, then resting."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "panel-stacks",
+        "value": "1180px"
+      },
+      {
+        "name": "compact",
+        "value": "820px"
+      },
+      {
+        "name": "narrow",
+        "value": "520px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "One main action per area: record a step, accept an offer, save.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Moved to final round…</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;gap:.4rem;min-height:36px;padding:0 .85rem;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface);color:var(--ink);font:560 .93rem var(--font);cursor:pointer;transition:background-color 150ms var(--ease-out),border-color 150ms var(--ease-out)}.ds-btn:focus-visible{outline:2px solid var(--livery);outline-offset:2px}.ds-btn-primary{background:var(--livery);border-color:var(--livery);color:var(--on-livery)}.ds-btn-primary:hover{background:var(--livery-raised);border-color:var(--livery-raised)}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Peer actions beside the primary: Rejected, Withdrew, Edit.",
+      "html": "<button class=\"ds-btn\">Rejected</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;gap:.4rem;min-height:36px;padding:0 .85rem;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface);color:var(--ink);font:560 .93rem var(--font);cursor:pointer;transition:background-color 150ms var(--ease-out),border-color 150ms var(--ease-out)}.ds-btn:hover{background:var(--surface-hover);border-color:var(--ink-3)}.ds-btn:focus-visible{outline:2px solid var(--livery);outline-offset:2px}"
+    },
+    {
+      "name": "Search on Livery",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "The top bar's search, translucent on the spruce livery.",
+      "html": "<div class=\"ds-livery\"><input class=\"ds-search\" type=\"search\" placeholder=\"Find an application\"></div>",
+      "css": ".ds-livery{background:var(--livery);padding:10px}.ds-search{width:280px;height:36px;padding:0 .7rem;border:1px solid rgb(255 255 255/.16);border-radius:6px;background:rgb(255 255 255/.08);color:var(--on-livery);font:400 15px var(--font)}.ds-search::placeholder{color:var(--on-livery-muted)}.ds-search:focus{outline:none;background:rgb(255 255 255/.14);border-color:rgb(255 255 255/.5)}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Form fields on label stock.",
+      "html": "<input class=\"ds-input\" placeholder=\"Company\">",
+      "css": ".ds-input{min-height:38px;padding:.45rem .7rem;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface);color:var(--ink);font:400 15px var(--font)}.ds-input::placeholder{color:var(--ink-3)}.ds-input:hover{border-color:var(--ink-3)}.ds-input:focus{outline:none;border-color:var(--livery);box-shadow:0 0 0 3px rgb(14 59 46/.16)}"
+    },
+    {
+      "name": "Filter Tabs",
+      "kind": "nav",
+      "refersTo": "tab-count",
+      "description": "Pipeline filters with counts; the Updates count turns yellow when there's news.",
+      "html": "<nav class=\"ds-tabs\"><a class=\"ds-tab\" aria-current=\"page\">All <span class=\"ds-count\">17</span></a><a class=\"ds-tab\">Updates <span class=\"ds-count ds-news\">3</span></a><a class=\"ds-tab\">Ghosted <span class=\"ds-count\">3</span></a></nav>",
+      "css": ".ds-tabs{display:flex;gap:.25rem;border-bottom:1px solid var(--line);font:560 15px var(--font)}.ds-tab{position:relative;display:inline-flex;gap:.45rem;align-items:center;padding:.6rem .7rem .7rem;color:var(--ink-2);cursor:pointer}.ds-tab:hover,.ds-tab[aria-current]{color:var(--ink)}.ds-tab[aria-current]::after{content:'';position:absolute;left:.5rem;right:.5rem;bottom:-1px;height:2px;background:var(--livery)}.ds-count{min-width:1.6rem;padding:0 .4rem;border-radius:999px;background:var(--surface-sunk);font-size:.8rem;font-weight:600;text-align:center}.ds-tab[aria-current] .ds-count{background:var(--livery);color:var(--on-livery)}.ds-news{background:var(--scan);color:var(--scan-ink)}"
+    },
+    {
+      "name": "Stage Chip",
+      "kind": "chip",
+      "refersTo": "stage-chip",
+      "description": "Status in rows and the detail panel; the dot is the fixed stage colour.",
+      "html": "<span class=\"ds-chip\" style=\"--c:var(--stage-interview)\">Interview</span> <span class=\"ds-chip\" style=\"--c:var(--stage-ghosted)\">Ghosted</span> <span class=\"ds-pill\">New</span>",
+      "css": ".ds-chip{display:inline-flex;align-items:center;gap:.4rem;font:600 .88rem var(--font);color:var(--ink)}.ds-chip::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--c)}.ds-pill{padding:.05rem .4rem;border-radius:999px;background:var(--scan);color:var(--scan-ink);font:700 .72rem var(--font)}"
+    },
+    {
+      "name": "Tracking Bar",
+      "kind": "custom",
+      "refersTo": "tracking-bar",
+      "description": "The signature: steps on a time axis, stage-coloured segments, dashed silence to today, yellow for an unseen step.",
+      "html": "<div class=\"ds-track\"><span class=\"ds-rail\"></span><span class=\"ds-seg\" style=\"left:10%;width:20%;--c:var(--stage-applied)\"></span><span class=\"ds-seg\" style=\"left:30%;width:35%;--c:var(--stage-screen)\"></span><span class=\"ds-silence\" style=\"left:65%;width:30%\"></span><span class=\"ds-node ds-applied\" style=\"left:10%;--c:var(--stage-applied)\"></span><span class=\"ds-node\" style=\"left:30%;--c:var(--stage-screen)\"></span><span class=\"ds-node ds-unseen\" style=\"left:65%\"></span></div>",
+      "css": ".ds-track{position:relative;width:420px;height:18px;background:var(--surface)}.ds-rail{position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line)}.ds-seg{position:absolute;top:calc(50% - 1.5px);height:3px;border-radius:2px;background:var(--c)}.ds-silence{position:absolute;top:calc(50% - 1px);height:2px;background:repeating-linear-gradient(90deg,var(--stage-ghosted) 0 5px,transparent 5px 9px)}.ds-node{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px var(--surface);transform:translate(-50%,-50%)}.ds-applied{background:var(--surface);border:2px solid var(--c)}.ds-unseen{width:13px;height:13px;border:2px solid var(--ink);background:var(--scan)}"
+    },
+    {
+      "name": "Updates Strip",
+      "kind": "custom",
+      "refersTo": "updates-strip",
+      "description": "Announces news since the last visit; the only yellow surface on a page.",
+      "html": "<div class=\"ds-strip\"><span class=\"ds-dot\"></span>3 applications have news since your last visit</div>",
+      "css": ".ds-strip{display:flex;align-items:center;gap:.6rem;padding:.6rem .9rem;border:1px solid var(--scan-edge);border-radius:10px;background:var(--scan-soft);color:var(--scan-ink);font:560 15px var(--font)}.ds-dot{width:12px;height:12px;border:2px solid var(--ink);border-radius:50%;background:var(--scan)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Tracking Page",
+    "overview": "Applied draws every job application as a shipment being tracked, and every email as a scan. The interface borrows a carrier's tracking page: a painted livery bar, white label stock, and a progress line per application. It refuses the category's Kanban columns and grey tables. The pipeline is one shared timeline where each application's bar starts on the day you applied and runs to today. Silence is drawn to its real length, so ghosting is something you can see instead of something you forget.\n\nThe world shows up in the form, never in the words. Copy uses job vocabulary only (\"Moved to interview\", \"No news for 24 days\"), and the tracking metaphor lives in the bars, the scan-yellow node, the perforated label head, and the status word set large at the top of the detail panel. Everything else is plain, dense, standard product UI that a job seeker can operate without learning anything.\n\nThe screen is light, matching the daytime desk-and-phone scene it's used in. Colour does real work: the livery owns the shell, the stage colours encode progress, yellow encodes news, and grey encodes closure.",
+    "keyCharacteristics": [
+      "Deep spruce livery bar over cool white label stock",
+      "One shared time axis for every application's tracking bar",
+      "Dashed silence drawn to scale; yellow only for what's new",
+      "Fixed stage colours, identical everywhere they appear",
+      "One variable family (Archivo) with its width axis carrying the label character"
+    ],
+    "rules": [
+      {
+        "name": "The Scan Yellow Rule",
+        "body": "Yellow means \"new since your last visit\" and nothing else. It is never a primary action, a focus ring, a warning or a decoration. If a screen has no news, it has no yellow.",
+        "section": "colors"
+      },
+      {
+        "name": "The Fixed Stage Colour Rule",
+        "body": "Each stage owns one colour everywhere: tracking bars, chips, history nodes, filters, and the Sankey to come. A new surface reuses the set and never invents a stage colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Grey but Kept Rule",
+        "body": "A rejected, withdrawn or declined application drops to Closed Grey but keeps its row and history. An accepted offer keeps its colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Family Rule",
+        "body": "Archivo carries every role. Emphasis comes from weight and width, never from a second face. Mono appears only where the content is a code: a reference or an email address.",
+        "section": "typography"
+      },
+      {
+        "name": "The Status Word Rule",
+        "body": "On a detail view, the current status is the largest text in the panel, the way a tracking page leads with \"Delivered\".",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Stock Rule",
+        "body": "Rows and boards never cast shadows. Depth is a floating panel or nothing.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do draw time to scale on a shared axis whenever more than one application is shown.",
+      "Do mark news with the Scan Yellow node and the \"New\" pill, and clear it once the application is opened.",
+      "Do reuse the stage colour set exactly, and grey closed applications without removing them.",
+      "Do lead detail views with the status word at status scale (1.9rem, 720).",
+      "Do use tabular figures for every date, count and duration."
+    ],
+    "donts": [
+      "Don't use yellow for anything except news.",
+      "Don't mark rows with coloured side stripes; news lives on the bar's node.",
+      "Don't use shipping words in copy (\"delivered\", \"in transit\", \"parcel\"). The world stays in the form.",
+      "Don't introduce a second typeface or use mono for anything but references and addresses.",
+      "Don't put kickers or eyebrows above headings."
+    ]
+  }
+}

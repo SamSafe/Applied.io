@@ -94,7 +94,7 @@ apps/worker ──────────────────┴───�
 | Auth | Better Auth | Magic link, Google and Microsoft sign-in (passkeys later). Runs on Workers with D1. *(Confirmed in spike S4.)* |
 | Transactional email | Cloudflare Email Service (fallback: Resend) | Magic links and digests. Same platform. |
 | LLM | Anthropic API via `@anthropic-ai/sdk` | Structured outputs with zod (`messages.parse` + `zodOutputFormat`). Model choice in [EMAIL_PIPELINE.md](EMAIL_PIPELINE.md#model-and-cost). |
-| Frontend | React + Vite, TanStack Query, Tailwind | Mainstream and simple. A single-page app with no server rendering is enough for v1. |
+| Frontend | React + Vite, TanStack Query, wouter, plain CSS with design tokens, lucide icons, self-hosted Archivo | Mainstream and simple. A single-page app with no server rendering is enough for v1. Visual system: [apps/web/DESIGN.md](../apps/web/DESIGN.md). |
 | Charts | `d3-sankey` → SVG → PNG export | Same node and link data as the SankeyMATIC text export. |
 | Tests | Vitest (+ Workers pool), `.eml` fixture corpus | Core logic is pure, so most tests are plain unit tests. |
 | Tooling | pnpm workspaces, Biome, GitHub Actions, Wrangler | |

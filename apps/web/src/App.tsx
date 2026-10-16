@@ -1,20 +1,58 @@
-import { useEffect, useState } from "react";
+import { Redirect, Route, Switch, useLocation } from "wouter";
+import { ApiError } from "./api";
+import { ErrorBanner, Mark } from "./components/bits";
+import { Shell } from "./components/Shell";
+import { useMe } from "./hooks";
+import { Pipeline } from "./pages/Pipeline";
+import { SettingsPage } from "./pages/Settings";
+import { SignIn } from "./pages/SignIn";
 
-/** Placeholder shell until M2 builds the tracker UI. Confirms the SPA can reach the API. */
 export function App() {
-  const [api, setApi] = useState<"checking" | "ok" | "down">("checking");
+  const me = useMe();
+  const [location] = useLocation();
 
-  useEffect(() => {
-    fetch("/api/health")
-      .then((res) => setApi(res.ok ? "ok" : "down"))
-      .catch(() => setApi("down"));
-  }, []);
+  if (me.isPending) return <Boot />;
 
+  if (me.error) {
+    if (me.error instanceof ApiError && me.error.status === 401) {
+      return location === "/sign-in" ? <SignIn /> : <Redirect to="/sign-in" replace />;
+    }
+    return (
+      <Boot>
+        <ErrorBanner error={me.error} onRetry={() => me.refetch()} />
+      </Boot>
+    );
+  }
+
+  if (location === "/sign-in") return <Redirect to="/" replace />;
+
+  const { user } = me.data;
   return (
-    <main style={{ fontFamily: "system-ui, sans-serif", padding: "2rem" }}>
-      <h1>Applied</h1>
-      <p>Apply anywhere. Your tracker updates itself.</p>
-      <p>API: {api}</p>
-    </main>
+    <Shell user={user}>
+      <Switch>
+        <Route path="/settings">
+          <SettingsPage user={user} />
+        </Route>
+        <Route>
+          <Pipeline />
+        </Route>
+      </Switch>
+    </Shell>
+  );
+}
+
+function Boot({ children }: { children?: React.ReactNode }) {
+  return (
+    <>
+      <div className="shell-bar">
+        <div className="shell-bar-inner">
+          <span className="wordmark">
+            <Mark />
+            Applied
+          </span>
+        </div>
+      </div>
+      <main className="main">{children}</main>
+    </>
   );
 }

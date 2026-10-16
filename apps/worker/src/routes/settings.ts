@@ -16,7 +16,7 @@ function isTimeZone(tz: string): boolean {
 const SettingsPatch = z
   .object({
     ghostThresholdDays: z.int().min(1).max(365),
-    timezone: z.string().refine(isTimeZone, "Unknown time zone"),
+    timezone: z.string().refine(isTimeZone, "Unknown time zone").nullable(),
     // Capped at 30: the privacy policy promises raw mail is gone within 30 days.
     rawRetentionDays: z.int().min(1).max(30),
     autoApply: z.boolean(),

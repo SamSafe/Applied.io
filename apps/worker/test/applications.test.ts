@@ -215,7 +215,7 @@ describe("settings", () => {
   it("returns defaults, updates, and validates", async () => {
     expect((await send("GET", "/api/settings")).body.settings).toEqual({
       ghostThresholdDays: 21,
-      timezone: "UTC",
+      timezone: null,
       rawRetentionDays: 30,
       autoApply: true,
       digest: "off",

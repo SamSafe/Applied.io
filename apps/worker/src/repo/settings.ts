@@ -6,7 +6,7 @@ export type UserSettings = Omit<typeof settings.$inferSelect, "userId">;
 
 export const DEFAULT_USER_SETTINGS: UserSettings = {
   ghostThresholdDays: 21,
-  timezone: "UTC",
+  timezone: null,
   rawRetentionDays: 30,
   autoApply: true,
   digest: "off",

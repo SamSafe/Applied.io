@@ -70,10 +70,12 @@ matching table is a passing test.
 - [x] API: applications, events, void, settings (see
       [ARCHITECTURE.md](ARCHITECTURE.md#api-surface-v1)). Stats and Sankey endpoints from
       M5 are done too, since core already computes them.
-- [ ] Web: sign-in, application list (stage, status, age, ghost flag, filters, search),
+- [x] Web: sign-in, application list (stage, status, age, ghost flag, filters, search),
       detail timeline with actions (advance / reject / withdraw / accept / decline /
-      note / undo), add form.
-- [ ] Deploy to staging.
+      note / undo), add form, settings. Design: "The Tracking Page"
+      ([apps/web/DESIGN.md](../apps/web/DESIGN.md)). Also: unseen-update tracking for
+      email events, and `pnpm seed:dev` for synthetic local data.
+- [ ] Deploy to staging. *(Waiting on the domain; see [spikes/SETUP.md](spikes/SETUP.md).)*
 
 **Done when:** you log new applications here instead of Notion.
 

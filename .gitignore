@@ -20,3 +20,6 @@ packages/mail/fixtures/private/
 # Logs
 *.log
 worker-configuration.d.ts
+
+# Impeccable review captures (regenerable)
+apps/web/.impeccable/review/

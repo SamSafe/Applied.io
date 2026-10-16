@@ -18,7 +18,7 @@ Unresolved: Insights (stats/Sankey) screen arrives in M5; email-driven "updates"
 
 THESIS: Each application is a shipment being tracked and each email is a scan. Refuses the category's Kanban columns and its grey table: the pipeline is one shared timeline of tracking bars.
 
-OWN-WORLD: Deep spruce livery bar (#0E3B2E) over white label stock (#F6F7F4 ground, #FFFFFF rows). Ink #16181A. One fixed stage colour set (applied slate, screen teal, interview blue, final violet, offer green; rejected brick, ghosted fog) used identically in bars, chips and filters. Scan yellow (#FFC933) means only "new since your last visit". Closed rows go grey but stay. System sans with tabular figures; monospace only for the tracking handle.
+OWN-WORLD: Deep spruce livery bar (#0E3B2E) over white label stock (#F6F7F4 ground, #FFFFFF rows). Ink #16181A. One fixed stage colour set (applied slate, screen teal, interview blue, final violet, offer green; rejected brick, ghosted fog) used identically in bars, chips and filters. Scan yellow (#FFC933) means only "new since your last visit". Closed rows go grey but stay. Archivo Variable (self-hosted; width axis 86% for headings) with tabular figures; monospace only for the tracking handle. (Built; see DESIGN.md.)
 
 STORY: You open it, see "3 updates since you last looked", read every bar left to right in seconds, open the one that moved, confirm or undo the step, and leave knowing exactly where everything stands.
 

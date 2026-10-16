@@ -43,12 +43,15 @@ pnpm --filter @apptracker/worker db:migrate:local
 pnpm --filter @apptracker/web build                       # the Worker serves the SPA build
 pnpm --filter @apptracker/worker dev                      # http://localhost:8787
 pnpm mail:send packages/mail/fixtures/public/gmail-autoforward-greenhouse.eml <address>
+pnpm seed:dev you@example.com --reset                     # synthetic demo data (local only)
 pnpm run check                                            # lint, dependency rules, types, tests
 ```
-Locally, magic-link sign-in URLs are printed to the `wrangler dev` console. Staging setup
+Locally, magic-link sign-in URLs are printed to the `wrangler dev` console. For UI work with
+hot reload, run `pnpm --filter @apptracker/web dev` (port 5173) alongside `wrangler dev`. Staging setup
 is in [docs/spikes/SETUP.md](docs/spikes/SETUP.md).
 
 ## Status
 M0 is built except the spikes that need a real domain (S1–S3). M1 (core domain) is done.
+M2 (manual tracker: API and web UI) is done except staging deploy and emailed magic links.
 See [ROADMAP.md](docs/ROADMAP.md) and [docs/spikes/](docs/spikes/README.md). The earlier
 .NET CLI/desktop design and the Java prototype are in git history.

@@ -15,6 +15,13 @@
       "when": 1792161807532,
       "tag": "0001_application_seen_at",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1792162609361,
+      "tag": "0002_settings_timezone_nullable",
+      "breakpoints": true
     }
   ]
 }

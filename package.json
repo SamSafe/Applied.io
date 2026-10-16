@@ -14,7 +14,8 @@
     "format": "biome check --write .",
     "check:deps": "node scripts/check-deps.mjs",
     "mail:send": "node scripts/send-mail.mjs",
-    "check": "pnpm lint && pnpm check:deps && pnpm typecheck && pnpm test"
+    "check": "pnpm lint && pnpm check:deps && pnpm typecheck && pnpm test",
+    "seed:dev": "node scripts/seed-dev.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

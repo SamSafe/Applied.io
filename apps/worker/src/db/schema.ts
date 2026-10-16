@@ -199,7 +199,8 @@ export const settings = sqliteTable(
       .primaryKey()
       .references(() => user.id, { onDelete: "cascade" }),
     ghostThresholdDays: integer("ghost_threshold_days").notNull().default(21),
-    timezone: text("timezone").notNull().default("UTC"),
+    /** IANA zone; null means "use the viewer's device time zone". */
+    timezone: text("timezone"),
     rawRetentionDays: integer("raw_retention_days").notNull().default(30),
     autoApply: integer("auto_apply", { mode: "boolean" }).notNull().default(true),
     digest: text("digest", { enum: ["off", "weekly"] })
