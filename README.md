@@ -53,7 +53,8 @@ is in [docs/spikes/SETUP.md](docs/spikes/SETUP.md).
 ## Status
 M0 is built except the spikes that need a real domain (S1–S3). M1 (core domain) is done.
 M2 (manual tracker: API and web UI) is done except staging deploy and emailed magic links.
-M3 (email understanding) and M4 (matching, automatic updates, review queue) are built. The
-classifier needs an `ANTHROPIC_API_KEY` and your private eval corpus before it's proven.
+M3 (email understanding), M4 (matching, automatic updates, review queue) and M5 (Insights:
+stats, Sankey, PNG export) are built. The classifier needs an `ANTHROPIC_API_KEY` and your
+private eval corpus before it's proven.
 See [ROADMAP.md](docs/ROADMAP.md) and [docs/spikes/](docs/spikes/README.md). The earlier
 .NET CLI/desktop design and the Java prototype are in git history.

@@ -3,6 +3,7 @@ import { ApiError } from "./api";
 import { ErrorBanner, Mark } from "./components/bits";
 import { Shell } from "./components/Shell";
 import { useMe } from "./hooks";
+import { InsightsPage } from "./pages/Insights";
 import { Pipeline } from "./pages/Pipeline";
 import { ReviewPage } from "./pages/Review";
 import { SettingsPage } from "./pages/Settings";
@@ -36,6 +37,9 @@ export function App() {
         </Route>
         <Route path="/review">
           <ReviewPage />
+        </Route>
+        <Route path="/insights">
+          <InsightsPage />
         </Route>
         <Route>
           <Pipeline />

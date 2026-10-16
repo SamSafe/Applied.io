@@ -21,11 +21,11 @@ colors:
   scan-edge: "#ecd27a"
   scan-ink: "#4a3800"
   stage-applied: "#66717d"
-  stage-screen: "#13827a"
+  stage-screen: "#00897d"
   stage-interview: "#2e63d1"
-  stage-final: "#7347c9"
-  stage-offer: "#198a4c"
-  stage-rejected: "#b04a33"
+  stage-final: "#c0398f"
+  stage-offer: "#2a9d4f"
+  stage-rejected: "#9c3426"
   stage-withdrawn: "#8c7b5e"
   stage-ghosted: "#9aa0a6"
   closed: "#b9bec2"
@@ -201,7 +201,7 @@ encoding, and one reserved signal colour.
 
 ### Tertiary: the stage set
 - **Applied Slate** (`stage-applied`), **Screen Teal** (`stage-screen`), **Interview
-  Blue** (`stage-interview`), **Final Violet** (`stage-final`), **Offer Green**
+  Blue** (`stage-interview`), **Final Raspberry** (`stage-final`), **Offer Green**
   (`stage-offer`): progress, in funnel order.
 - **Rejected Brick** (`stage-rejected`), **Withdrew Khaki** (`stage-withdrawn`, also used
   for declined), **Ghost Fog** (`stage-ghosted`, also used for dashed silence): outcomes
@@ -230,6 +230,12 @@ it has no yellow.
 **The Fixed Stage Colour Rule.** Each stage owns one colour everywhere: tracking bars,
 chips, history nodes, filters, and the Sankey to come. A new surface reuses the set and
 never invents a stage colour.
+
+**The Validated Stage Rule.** The chromatic stage colours (screen, interview, final, offer,
+rejected) are checked as an ordered categorical palette with the data-viz validator: worst
+adjacent pair ΔE 10.9 under simulated protanopia and deuteranopia, 19.1 with normal vision,
+all ≥ 3:1 on white. Applied, ghosted and khaki outcomes are deliberate neutrals. Re-run the
+validator before changing any of them.
 
 **The Grey but Kept Rule.** A rejected, withdrawn or declined application drops to Closed
 Grey but keeps its row and history. An accepted offer keeps its colour.

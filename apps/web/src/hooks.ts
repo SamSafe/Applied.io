@@ -18,6 +18,7 @@ export const keys = {
   sources: ["sources"] as const,
   messages: ["messages"] as const,
   review: ["review"] as const,
+  insights: (since: string | null) => ["apps", "insights", since ?? "all"] as const,
 };
 
 export function useMe() {
@@ -198,5 +199,18 @@ export function useResolveReview() {
         qc.invalidateQueries({ queryKey: keys.apps }),
         qc.invalidateQueries({ queryKey: keys.messages }),
       ]),
+  });
+}
+
+/** Stats and the Sankey for one date range; both scoped by the same filter. */
+export function useInsights(since: string | null) {
+  return useQuery({
+    queryKey: keys.insights(since),
+    queryFn: async () => {
+      const [{ stats }, { sankey }] = await Promise.all([api.stats(since), api.sankey(since)]);
+      return { stats, sankey };
+    },
+    // Hold the previous render while a new range loads (no skeleton flash).
+    placeholderData: (previous) => previous,
   });
 }

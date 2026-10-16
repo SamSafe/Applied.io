@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Inbox, LogOut, Plus, Search, Settings } from "lucide-react";
+import { ChartNoAxesColumn, Inbox, LogOut, Plus, Search, Settings } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useSearch } from "wouter";
 import { api, type User } from "../api";
@@ -68,6 +68,9 @@ export function Shell({ user, children }: { user: User; children: ReactNode }) {
             <Link href="/review" aria-current={location === "/review" ? "page" : undefined}>
               Review
               {reviewCount > 0 && <span className="nav-count num">{reviewCount}</span>}
+            </Link>
+            <Link href="/insights" aria-current={location === "/insights" ? "page" : undefined}>
+              Insights
             </Link>
             <Link href="/settings" aria-current={location === "/settings" ? "page" : undefined}>
               Settings
@@ -146,6 +149,15 @@ function AccountMenu({ user }: { user: User }) {
           <Link href="/review" className="menu-item" role="menuitem" onClick={() => setOpen(false)}>
             <Inbox />
             Review
+          </Link>
+          <Link
+            href="/insights"
+            className="menu-item"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+          >
+            <ChartNoAxesColumn />
+            Insights
           </Link>
           <Link
             href="/settings"

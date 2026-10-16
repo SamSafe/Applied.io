@@ -31,11 +31,11 @@
 
   /* One fixed stage set, identical in bars, chips and filters. */
   --stage-applied: #66717d;
-  --stage-screen: #13827a;
+  --stage-screen: #00897d;
   --stage-interview: #2e63d1;
-  --stage-final: #7347c9;
-  --stage-offer: #198a4c;
-  --stage-rejected: #b04a33;
+  --stage-final: #c0398f;
+  --stage-offer: #2a9d4f;
+  --stage-rejected: #9c3426;
   --stage-withdrawn: #8c7b5e;
   --stage-ghosted: #9aa0a6;
   --closed: #b9bec2;
@@ -1742,6 +1742,201 @@ textarea {
   font-size: 0.84rem;
 }
 
+/* ── Insights ─────────────────────────────────────────────────────────────────────────── */
+
+.insights {
+  max-width: 1180px;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.insights-body {
+  display: grid;
+  gap: 1.25rem;
+  transition: opacity 150ms var(--ease-out);
+}
+
+/* Grid items default to min-width: auto; the chart scrolls inside its frame instead. */
+.insights-body > * {
+  min-width: 0;
+}
+
+/* A new range loads behind the previous render, never a skeleton flash. */
+.insights-body.is-refreshing {
+  opacity: 0.55;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.stat {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.9rem 1rem 1rem;
+  box-shadow: -1px 0 0 var(--line);
+}
+
+.stat-label {
+  color: var(--ink-2);
+  font-size: 0.87rem;
+  font-weight: 600;
+}
+
+/* Proportional figures on standalone values; tabular only in columns. */
+.stat-value {
+  font-size: 1.85rem;
+  font-weight: 700;
+  font-stretch: 86%;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.stat-unit {
+  color: var(--ink-2);
+  font-size: 1rem;
+  font-weight: 600;
+  font-stretch: 100%;
+  letter-spacing: 0;
+}
+
+.stat-note {
+  color: var(--ink-3);
+  font-size: 0.82rem;
+}
+
+.chart-card {
+  margin: 0;
+  padding: 1.1rem 1.25rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+}
+
+.chart-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.chart-head .section-title {
+  margin-bottom: 0.2rem;
+}
+
+.chart-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chart-frame {
+  position: relative;
+  overflow-x: auto;
+}
+
+.chart-frame svg {
+  display: block;
+}
+
+.sankey-link {
+  fill: none;
+  stroke-opacity: 0.3;
+  transition: stroke-opacity 150ms var(--ease-out);
+  cursor: default;
+}
+
+.sankey-link:hover,
+.sankey-link:focus-visible {
+  stroke-opacity: 0.55;
+  outline: none;
+}
+
+.sankey-label {
+  fill: var(--ink);
+  font-size: 0.87rem;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.sankey-count {
+  fill: var(--ink-3);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.chart-tooltip {
+  position: absolute;
+  z-index: 5;
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  background: var(--surface);
+  box-shadow: var(--shadow-pop);
+  font-size: 0.84rem;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 12px));
+}
+
+.chart-tooltip strong {
+  font-size: 1rem;
+}
+
+.chart-tooltip span {
+  color: var(--ink-2);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.93rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.data-table th {
+  color: var(--ink-2);
+  font-size: 0.87rem;
+  font-weight: 600;
+}
+
+.data-table .num-col {
+  text-align: right;
+}
+
 /* ── Sign in ──────────────────────────────────────────────────────────────────────────── */
 
 .signin {
@@ -1856,8 +2051,9 @@ textarea {
     display: none;
   }
 
-  /* Hint that the tab row scrolls sideways. */
-  .tabs {
+  /* Hint that the tab row and the Sankey scroll sideways. */
+  .tabs,
+  .chart-frame {
     mask-image: linear-gradient(90deg, var(--ink) 85%, transparent);
   }
 

@@ -120,10 +120,11 @@ typing, auto-applied precision is ≥ 97%, and review is ≤ 10% of relevant ema
 
 ## M5 — Insight & share (~3 days)
 
-- [ ] Stats page from `core.analytics`.
-- [ ] Sankey view (`d3-sankey`), date-range filter, renameable labels.
-- [ ] Export PNG (with a small "made with Applied" mark), copy SankeyMATIC text.
-- [ ] Ghost threshold + time zone settings.
+- [x] Stats page from `core.analytics` (Insights: six stat tiles, date-range filter).
+- [x] Sankey view (`d3-sankey`), date-range filter, hover readouts, table view.
+      *(Renameable labels not done yet: core supports them, the UI doesn't.)*
+- [x] Export PNG (with a small "made with Applied" mark), copy SankeyMATIC text.
+- [x] Ghost threshold + time zone settings.
 
 **Done when:** your real data produces a Sankey you'd post.
 

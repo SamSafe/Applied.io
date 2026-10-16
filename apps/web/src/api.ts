@@ -70,6 +70,22 @@ export interface Detail extends Summary {
   events: HistoryEvent[];
 }
 
+/** core.analytics output. */
+export interface Stats {
+  applications: number;
+  responded: number;
+  responseRate: number | null;
+  interviewed: number;
+  interviewRate: number | null;
+  offers: number;
+  offerRate: number | null;
+  ghosted: number;
+  ghostEligible: number;
+  ghostRate: number | null;
+  medianTimeToFirstResponseMs: number | null;
+  funnel: Record<Stage, number>;
+}
+
 export type Counts = Record<Exclude<StatusFilter, "all">, number> & { all: number };
 
 export interface Settings {
@@ -265,6 +281,12 @@ export const api = {
   setVerifiedMailbox: (id: string, verifiedMailbox: string | null) =>
     request<{ source: MailSource }>(`/api/mail-sources/${id}`, json("PATCH", { verifiedMailbox })),
 
+  stats: (since: string | null) =>
+    request<{ stats: Stats }>(`/api/stats${since ? `?since=${encodeURIComponent(since)}` : ""}`),
+  sankey: (since: string | null) =>
+    request<{ sankey: import("./sankeyLayout").SankeyData }>(
+      `/api/sankey${since ? `?since=${encodeURIComponent(since)}` : ""}`,
+    ),
   review: () => request<{ items: ReviewItem[] }>("/api/review"),
   resolveReview: (id: string, action: ReviewAction) =>
     request<{ applicationId: string | null }>(`/api/review/${id}`, json("POST", action)),

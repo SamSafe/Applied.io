@@ -82,16 +82,16 @@
       "stage-screen": {
         "role": "tertiary",
         "displayName": "Screen Teal",
-        "canonical": "oklch(54.8% 0.092 187.1)",
+        "canonical": "oklch(56.6% 0.100 184.1)",
         "tonalRamp": [
           "#000f0d",
-          "#032b27",
-          "#0a4a45",
-          "#156c65",
-          "#288f86",
-          "#51b1a8",
-          "#7cdbd1",
-          "#b7fff6"
+          "#002b27",
+          "#004b44",
+          "#016d63",
+          "#169084",
+          "#47b3a5",
+          "#74ddcf",
+          "#b8fff4"
         ]
       },
       "stage-interview": {
@@ -111,47 +111,47 @@
       },
       "stage-final": {
         "role": "tertiary",
-        "displayName": "Final Violet",
-        "canonical": "oklch(51.9% 0.192 294.3)",
+        "displayName": "Final Raspberry",
+        "canonical": "oklch(56.9% 0.191 345.8)",
         "tonalRamp": [
-          "#0f0029",
-          "#2c045d",
-          "#4c0f97",
-          "#683abc",
-          "#875ee1",
-          "#a687f8",
-          "#cabcfd",
-          "#efecff"
+          "#1d0011",
+          "#44022f",
+          "#710950",
+          "#a11474",
+          "#c74095",
+          "#ee64b8",
+          "#fea8d8",
+          "#ffe7f3"
         ]
       },
       "stage-offer": {
         "role": "tertiary",
         "displayName": "Offer Green",
-        "canonical": "oklch(55.9% 0.135 153.1)",
+        "canonical": "oklch(61.5% 0.153 149.6)",
         "tonalRamp": [
-          "#001004",
-          "#022d14",
-          "#0a4d28",
-          "#156f3d",
-          "#289455",
-          "#51b675",
-          "#7ce19d",
-          "#c9fed7"
+          "#001002",
+          "#002d0f",
+          "#034e20",
+          "#0a7132",
+          "#1e9548",
+          "#4bb868",
+          "#77e390",
+          "#cafed3"
         ]
       },
       "stage-rejected": {
         "role": "tertiary",
         "displayName": "Rejected Brick",
-        "canonical": "oklch(53.9% 0.139 34.2)",
+        "canonical": "oklch(47.5% 0.141 30.6)",
         "tonalRamp": [
           "#200000",
-          "#460b01",
-          "#741a04",
-          "#9c3821",
-          "#c15a42",
-          "#e77b62",
-          "#fdb2a0",
-          "#fee9e4"
+          "#4a0400",
+          "#790e04",
+          "#9e3627",
+          "#c35747",
+          "#e97967",
+          "#feb1a3",
+          "#ffe9e5"
         ]
       },
       "stage-withdrawn": {
@@ -365,6 +365,11 @@
       {
         "name": "The Fixed Stage Colour Rule",
         "body": "Each stage owns one colour everywhere: tracking bars, chips, history nodes, filters, and the Sankey to come. A new surface reuses the set and never invents a stage colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Validated Stage Rule",
+        "body": "The chromatic stage colours (screen, interview, final, offer, rejected) are checked as an ordered categorical palette with the data-viz validator: worst adjacent pair ΔE 10.9 under simulated protanopia and deuteranopia, 19.1 with normal vision, all ≥ 3:1 on white. Applied, ghosted and khaki outcomes are deliberate neutrals. Re-run the validator before changing any of them.",
         "section": "colors"
       },
       {
