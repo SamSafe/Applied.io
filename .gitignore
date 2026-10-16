@@ -1,59 +1,21 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# Dependencies & build output
+node_modules/
+dist/
+*.tsbuildinfo
 
-### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-*.iws
-*.iml
-*.ipr
+# Cloudflare / Wrangler
+.wrangler/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
 
-### Eclipse ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Personal email fixtures: never commit
+packages/mail/fixtures/private/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
+# Editors & OS
 .vscode/
-
-### JetBrains (Rider/IntelliJ) ###
 .idea/
-
-### Mac OS ###
 .DS_Store
 
-### .NET ###
-bin/
-obj/
-*.user
-*.suo
-[Dd]ebug/
-[Rr]elease/
-[Bb]in/
-[Oo]bj/
-project.lock.json
-artifacts/
-.vs/
-
-### SQLite (local app database) ###
-*.db
-*.db-shm
-*.db-wal
+# Logs
+*.log
