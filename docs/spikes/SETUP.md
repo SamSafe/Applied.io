@@ -16,6 +16,8 @@ pnpm exec wrangler d1 create apptracker-staging
 pnpm exec wrangler r2 bucket create apptracker-staging-raw-mail
 pnpm exec wrangler queues create apptracker-staging-mail
 pnpm exec wrangler queues create apptracker-staging-mail-dlq
+# Backstop for the daily purge job: nothing outlives the 30-day maximum retention.
+pnpm exec wrangler r2 bucket lifecycle add apptracker-staging-raw-mail expire-raw-mail --expire-days 31
 ```
 In `wrangler.jsonc` → `env.staging`, replace:
 - `REPLACE_WITH_D1_ID` with the `database_id` printed by `d1 create`

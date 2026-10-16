@@ -142,3 +142,11 @@ describe("analytics (worked example)", () => {
     expect(empty.medianTimeToFirstResponseMs).toBeNull();
   });
 });
+
+describe("sankey node ids", () => {
+  it("names the built-in nodes behind each label, merged ones included", () => {
+    const { nodes } = sankey(apps, NOW, DEFAULT_SETTINGS, { labels: { no_response: "Ghosted" } });
+    expect(nodes.find((n) => n.name === "Applied")?.ids).toEqual(["applied"]);
+    expect(nodes.find((n) => n.name === "Ghosted")?.ids).toEqual(["no_response", "ghosted"]);
+  });
+});

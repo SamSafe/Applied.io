@@ -1,4 +1,7 @@
-import type { AdvanceStage, AppEventType, Outcome, Stage } from "@apptracker/core";
+import type { AdvanceStage, AppEventType, Outcome, SankeyNodeId, Stage } from "@apptracker/core";
+
+/** Renamed Sankey labels, by built-in node. */
+export type SankeyLabels = Partial<Record<SankeyNodeId, string>>;
 
 export type Provider = "magic-link" | "google" | "microsoft";
 export type StatusFilter = "all" | "open" | "updates" | "ghosted" | "closed";
@@ -283,10 +286,18 @@ export const api = {
 
   stats: (since: string | null) =>
     request<{ stats: Stats }>(`/api/stats${since ? `?since=${encodeURIComponent(since)}` : ""}`),
-  sankey: (since: string | null) =>
-    request<{ sankey: import("./sankeyLayout").SankeyData }>(
-      `/api/sankey${since ? `?since=${encodeURIComponent(since)}` : ""}`,
-    ),
+  sankey: (since: string | null, labels: SankeyLabels) => {
+    const params = new URLSearchParams();
+    if (since) params.set("since", since);
+    if (Object.keys(labels).length > 0) params.set("labels", JSON.stringify(labels));
+    const qs = params.toString();
+    return request<{ sankey: import("./sankeyLayout").SankeyData }>(
+      `/api/sankey${qs ? `?${qs}` : ""}`,
+    );
+  },
+  exportUrl: "/api/account/export",
+  deleteAccount: () =>
+    request<void>("/api/account", json("DELETE", { confirm: "delete my account" })),
   review: () => request<{ items: ReviewItem[] }>("/api/review"),
   resolveReview: (id: string, action: ReviewAction) =>
     request<{ applicationId: string | null }>(`/api/review/${id}`, json("POST", action)),

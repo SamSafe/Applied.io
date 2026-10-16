@@ -37,6 +37,8 @@ export const DEFAULT_SANKEY_LABELS: Record<SankeyNodeId, string> = {
 export interface SankeyNode {
   /** Unique label; nodes that share a label are merged, as SankeyMATIC does. */
   name: string;
+  /** The built-in nodes this label stands for (more than one when renamed labels merge). */
+  ids: SankeyNodeId[];
 }
 
 export interface SankeyLink {
@@ -96,12 +98,14 @@ export function sankey(
 
   // Count edges by label so renamed nodes merge, remembering each label's earliest node for ordering.
   const labelRank = new Map<string, number>();
+  const labelIds = new Map<string, Set<SankeyNodeId>>();
   const counts = new Map<string, { from: string; to: string; value: number }>();
   for (const { derived } of deriveInRange(apps, now, settings, options)) {
     const path = sankeyPath(derived);
     for (const id of path) {
       const name = labels[id];
       labelRank.set(name, Math.min(labelRank.get(name) ?? Infinity, order(id)));
+      labelIds.set(name, (labelIds.get(name) ?? new Set()).add(id));
     }
     for (let i = 1; i < path.length; i++) {
       const from = labels[path[i - 1] as SankeyNodeId];
@@ -123,7 +127,10 @@ export function sankey(
   const index = new Map(names.map((name, i) => [name, i]));
 
   return {
-    nodes: names.map((name) => ({ name })),
+    nodes: names.map((name) => ({
+      name,
+      ids: [...(labelIds.get(name) ?? [])].sort((a, b) => order(a) - order(b)),
+    })),
     links: edges.map((e) => ({
       source: index.get(e.from) as number,
       target: index.get(e.to) as number,

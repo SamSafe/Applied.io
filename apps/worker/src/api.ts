@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { createAuth, enabledProviders } from "./auth";
 import { type AppEnv, requireUser } from "./http";
+import { account } from "./routes/account";
 import { applications, events } from "./routes/applications";
 import { insights } from "./routes/insights";
 import { mailSources } from "./routes/mail-sources";
@@ -22,5 +23,6 @@ app.route("/events", events);
 app.route("/mail-sources", mailSources);
 app.route("/messages", messages);
 app.route("/review", review);
+app.route("/account", account);
 app.route("/settings", settingsRoutes);
 app.route("/", insights);

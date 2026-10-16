@@ -4,6 +4,7 @@ import {
   type Detail,
   type FactsInput,
   type ReviewAction,
+  type SankeyLabels,
   type StatusFilter,
   type StepInput,
 } from "./api";
@@ -18,7 +19,8 @@ export const keys = {
   sources: ["sources"] as const,
   messages: ["messages"] as const,
   review: ["review"] as const,
-  insights: (since: string | null) => ["apps", "insights", since ?? "all"] as const,
+  insights: (since: string | null, labels: SankeyLabels) =>
+    ["apps", "insights", since ?? "all", JSON.stringify(labels)] as const,
 };
 
 export function useMe() {
@@ -164,6 +166,15 @@ export function useUpdateSettings() {
   });
 }
 
+export function useDeleteAccount() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: api.deleteAccount,
+    // Nothing cached belongs to anyone any more.
+    onSuccess: () => qc.clear(),
+  });
+}
+
 export function useCreateForwarding() {
   const qc = useQueryClient();
   return useMutation({
@@ -203,11 +214,14 @@ export function useResolveReview() {
 }
 
 /** Stats and the Sankey for one date range; both scoped by the same filter. */
-export function useInsights(since: string | null) {
+export function useInsights(since: string | null, labels: SankeyLabels) {
   return useQuery({
-    queryKey: keys.insights(since),
+    queryKey: keys.insights(since, labels),
     queryFn: async () => {
-      const [{ stats }, { sankey }] = await Promise.all([api.stats(since), api.sankey(since)]);
+      const [{ stats }, { sankey }] = await Promise.all([
+        api.stats(since),
+        api.sankey(since, labels),
+      ]);
       return { stats, sankey };
     },
     // Hold the previous render while a new range loads (no skeleton flash).

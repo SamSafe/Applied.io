@@ -8,8 +8,8 @@ it, never use it for training.
 
 | Data | Where | Retention |
 |---|---|---|
-| Raw MIME of **relevant** forwarded mail | R2 | Deleted after `raw_retention_days` (default 30) by R2 lifecycle + a daily purge job. Long enough for review and reprocessing. |
-| **Filtered-out** forwarded mail | — | Body never stored past the prefilter. Headers (from, subject, date) kept 7 days for debugging. |
+| Raw MIME of **relevant** forwarded mail | R2 | Deleted after `raw_retention_days` (default 30, max 30) by a daily purge job (`apps/worker/src/purge.ts`), plus an R2 lifecycle rule as a backstop. Long enough for review and reprocessing. |
+| **Filtered-out** forwarded mail | D1 | Raw MIME deleted as soon as the prefilter rejects it. Headers (from, subject, date) kept 7 days for debugging, then deleted by the same job. |
 | Extracted facts: company, position, dates, events, evidence quote (≤ 300 chars) | D1 | Until the user deletes them or their account |
 | Account: email, name, auth records | D1 (Better Auth) | Until account deletion |
 | OAuth tokens (M7 connectors) | D1, encrypted with AES-GCM (key in Workers secrets) | Until disconnect or deletion |
@@ -40,12 +40,17 @@ state them accurately in the privacy policy.
 | **Admin snooping** | The admin view shows counts and failure reasons, never email content. Content access for debugging requires the user's explicit consent per message. |
 
 ## User rights (built by M6)
-- **Export:** JSON (everything) + CSV (applications and events).
+- **Export:** *built.* Settings → Download my data gives JSON of the account, settings,
+  applications with their full event history, and email metadata (sender, subject,
+  classification, evidence quote), never raw bodies. CSV is still to do.
 - **Delete a message:** removes the raw object and the evidence quote. Events stay
-  unless the user voids them.
-- **Delete the account:** hard-deletes all D1 rows and R2 objects within 24 hours and
-  revokes forwarding addresses and connector tokens.
-- **Disable auto-apply:** everything goes through review instead.
+  unless the user voids them. *Not built yet.*
+- **Delete the account:** *built.* Settings → Delete account removes the user's R2 objects,
+  then the user row, which cascades to every D1 table. This is immediate, not batched.
+  Forwarding addresses stop working at once, because the address lookup finds no source.
+  Connector tokens will cascade the same way (M7).
+- **Disable auto-apply:** *built.* Settings → Automatic updates; when off, everything goes
+  through review.
 
 ## Public share pages (M8)
 A share stores a **snapshot of aggregate counts** and an optional title. No company
@@ -55,8 +60,9 @@ names unless the user opts in per share. Revocable at any time.
 
 **Before public beta (M6):**
 - [ ] Privacy policy, terms, subprocessor list, contact address
-- [ ] Working export and deletion flows
-- [ ] Raw-mail purge job verified
+- [x] Working export and deletion flows (JSON export; CSV still to do)
+- [ ] Raw-mail purge job verified: built and tested locally (`test/purge.test.ts`), still
+      to watch run on staging
 - [ ] Product name and domain checked for conflicts (see [PRODUCT.md](PRODUCT.md#name))
 
 **Before the Gmail connector leaves testing mode (M7):**

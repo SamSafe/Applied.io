@@ -122,7 +122,9 @@ typing, auto-applied precision is ≥ 97%, and review is ≤ 10% of relevant ema
 
 - [x] Stats page from `core.analytics` (Insights: six stat tiles, date-range filter).
 - [x] Sankey view (`d3-sankey`), date-range filter, hover readouts, table view.
-      *(Renameable labels not done yet: core supports them, the UI doesn't.)*
+- [x] Renameable labels (Insights → Rename labels, saved per device). Renamed labels keep
+      their column and colour, merge when they match, and carry into the PNG and
+      SankeyMATIC text.
 - [x] Export PNG (with a small "made with Applied" mark), copy SankeyMATIC text.
 - [x] Ghost threshold + time zone settings.
 
@@ -136,6 +138,8 @@ typing, auto-applied precision is ≥ 97%, and review is ≤ 10% of relevant ema
       and generic providers. Detect the provider from the first forwarded email.
 - [ ] Privacy policy, terms, subprocessors. Export + account deletion. Purge job
       verified (see [SECURITY_PRIVACY.md](SECURITY_PRIVACY.md#compliance-checklist)).
+      *Built early: JSON export, account deletion, the daily purge job and the automatic
+      updates switch. Still to do: CSV export, policy pages, purge verified on staging.*
 - [ ] Abuse and cost controls: rate limits, per-user LLM budget, spend alert.
 - [ ] Error tracking + admin view (counts and failure reasons only).
 - [ ] Landing page, invite codes, feedback link.

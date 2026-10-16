@@ -264,6 +264,17 @@ describe("insights", () => {
     const ranged = (await send("GET", `/api/stats?since=${encodeURIComponent(daysAgo(7))}`)).body
       .stats;
     expect(ranged.applications).toBe(1);
+
+    const labels = encodeURIComponent('{"awaiting_reply":"Waiting"}');
+    const renamed = (await send("GET", `/api/sankey?labels=${labels}`)).body.sankey;
+    expect(renamed.sankeymatic).toContain("Applied [1] Waiting");
+    expect(renamed.nodes.find((n: { name: string }) => n.name === "Waiting").ids).toEqual([
+      "awaiting_reply",
+    ]);
+    expect((await send("GET", "/api/sankey?labels=nope")).status).toBe(400);
+    expect(
+      (await send("GET", `/api/sankey?labels=${encodeURIComponent('{"bogus":"x"}')}`)).status,
+    ).toBe(400);
   });
 });
 

@@ -1,12 +1,12 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Check, LogOut } from "lucide-react";
+import { Check, Download, LogOut, Trash2 } from "lucide-react";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { api, type User } from "../api";
 import { ErrorBanner } from "../components/bits";
 import { ForwardingSection, RecentEmailsSection } from "../components/Forwarding";
 import { Section } from "../components/Section";
-import { useSettings, useUpdateSettings } from "../hooks";
+import { useDeleteAccount, useSettings, useUpdateSettings } from "../hooks";
 
 export function SettingsPage({ user }: { user: User }) {
   // Deep links like /settings#forwarding: scroll once the section has rendered.
@@ -22,10 +22,43 @@ export function SettingsPage({ user }: { user: User }) {
       </div>
       <ForwardingSection />
       <RecentEmailsSection />
+      <AutomaticUpdatesSection />
       <GhostingSection />
       <TimeZoneSection />
       <AccountSection user={user} />
     </div>
+  );
+}
+
+function AutomaticUpdatesSection() {
+  const { data: settings } = useSettings();
+  const update = useUpdateSettings();
+
+  return (
+    <Section
+      title="Automatic updates"
+      lede="When an email is clearly news about one of your applications, Applied records it for you."
+    >
+      {settings && (
+        <>
+          <label className="choice">
+            <input
+              type="checkbox"
+              checked={settings.autoApply}
+              disabled={update.isPending}
+              onChange={(e) => update.mutate({ autoApply: e.target.checked })}
+            />
+            <span className="choice-text">Update applications from email automatically</span>
+          </label>
+          <p className="field-hint">
+            {settings.autoApply
+              ? "Only verified, unambiguous news is applied on its own. Anything less certain waits in Review, and every update can be undone."
+              : "Every email that looks like news waits in Review for you to confirm."}
+          </p>
+        </>
+      )}
+      {update.error && <ErrorBanner error={update.error} />}
+    </Section>
   );
 }
 
@@ -113,10 +146,17 @@ function TimeZoneSection() {
 function AccountSection({ user }: { user: User }) {
   const qc = useQueryClient();
   const [, navigate] = useLocation();
+  const remove = useDeleteAccount();
+  const [confirming, setConfirming] = useState(false);
+
   return (
     <Section title="Account" lede="You sign in with a link sent to this address.">
       <p>{user.email}</p>
-      <div>
+      <div className="form-actions">
+        <a className="btn" href={api.exportUrl} download>
+          <Download />
+          Download my data
+        </a>
         <button
           type="button"
           className="btn"
@@ -129,7 +169,38 @@ function AccountSection({ user }: { user: User }) {
           <LogOut />
           Sign out
         </button>
+        <span className="spacer" />
+        {!confirming && (
+          <button type="button" className="btn btn-danger" onClick={() => setConfirming(true)}>
+            <Trash2 />
+            Delete account
+          </button>
+        )}
       </div>
+      {confirming && (
+        <div className="confirm" role="alert">
+          <p>
+            Delete your account, applications and stored emails? This can't be undone. Download your
+            data first if you want a copy.
+          </p>
+          <button
+            type="button"
+            className="btn btn-small btn-quiet"
+            onClick={() => setConfirming(false)}
+          >
+            Keep my account
+          </button>
+          <button
+            type="button"
+            className="btn btn-small btn-danger-solid"
+            disabled={remove.isPending}
+            onClick={() => remove.mutate(undefined, { onSuccess: () => navigate("/sign-in") })}
+          >
+            {remove.isPending ? "Deleting…" : "Delete everything"}
+          </button>
+        </div>
+      )}
+      {remove.error && <ErrorBanner error={remove.error} />}
     </Section>
   );
 }

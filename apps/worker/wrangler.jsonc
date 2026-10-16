@@ -30,6 +30,8 @@
     }
   ],
   "r2_buckets": [{ "binding": "RAW_MAIL", "bucket_name": "apptracker-raw-mail" }],
+  // Daily retention job (src/purge.ts).
+  "triggers": { "crons": ["17 3 * * *"] },
   "queues": {
     "producers": [{ "binding": "MAIL_QUEUE", "queue": "apptracker-mail" }],
     "consumers": [
@@ -61,6 +63,7 @@
         }
       ],
       "r2_buckets": [{ "binding": "RAW_MAIL", "bucket_name": "apptracker-staging-raw-mail" }],
+      "triggers": { "crons": ["17 3 * * *"] },
       "queues": {
         "producers": [{ "binding": "MAIL_QUEUE", "queue": "apptracker-staging-mail" }],
         "consumers": [

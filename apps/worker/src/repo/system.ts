@@ -1,10 +1,11 @@
 /**
- * System-path queries: inbound email and queue processing, where no session exists yet.
+ * System-path queries: inbound email, queue processing and the retention job, where no
+ * session exists.
  * These are the only repository functions that don't take a `userId` argument. Each one
  * resolves the owning user from an unguessable key (address token, internal message id),
  * and callers scope everything after that to the returned `userId`.
  */
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray, isNotNull, lt } from "drizzle-orm";
 import type { Db } from "../db/client";
 import { mailSource, message } from "../db/schema";
 
@@ -30,4 +31,28 @@ export async function getMessageForProcessing(db: Db, messageId: string) {
     .where(and(eq(mailSource.id, row.sourceId), eq(mailSource.userId, row.userId)))
     .limit(1);
   return source ? { message: row, source } : null;
+}
+
+/** Messages whose raw MIME is past its purge date (retention job, all users). */
+export async function purgeCandidates(db: Db, now: Date, limit: number) {
+  const rows = await db
+    .select({ id: message.id, rawKey: message.rawKey })
+    .from(message)
+    .where(and(isNotNull(message.rawKey), lt(message.purgeAfter, now.toISOString())))
+    .limit(limit);
+  return rows as { id: string; rawKey: string }[];
+}
+
+export async function removeRawKeys(db: Db, ids: string[]): Promise<void> {
+  if (ids.length > 0)
+    await db.update(message).set({ rawKey: null }).where(inArray(message.id, ids));
+}
+
+/** Drops filtered-out messages (headers only by now) received before `before`. */
+export async function deleteFilteredBefore(db: Db, before: Date): Promise<number> {
+  const rows = await db
+    .delete(message)
+    .where(and(eq(message.status, "filtered_out"), lt(message.receivedAt, before.toISOString())))
+    .returning({ id: message.id });
+  return rows.length;
 }

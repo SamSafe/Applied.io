@@ -1,7 +1,8 @@
-import { Check, Copy, Download, Table2 } from "lucide-react";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { DEFAULT_SANKEY_LABELS, SANKEY_NODES, type SankeyNodeId } from "@apptracker/core";
+import { Check, Copy, Download, PenLine, Table2 } from "lucide-react";
+import { type FormEvent, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link } from "wouter";
-import type { Stats } from "../api";
+import type { SankeyLabels, Stats } from "../api";
 import { ErrorBanner } from "../components/bits";
 import { exportSankeyPng } from "../exportPng";
 import { DAY_MS } from "../format";
@@ -15,13 +16,42 @@ const RANGES = [
 ] as const;
 type RangeId = (typeof RANGES)[number]["id"];
 
+const LABELS_KEY = "applied.sankey-labels";
+const MAX_LABEL = 30;
+
+/** Renamed labels are a per-device preference; storage can be missing or blocked. */
+function loadLabels(): SankeyLabels {
+  try {
+    const stored: unknown = JSON.parse(localStorage.getItem(LABELS_KEY) ?? "{}");
+    if (typeof stored !== "object" || stored === null) return {};
+    const labels: SankeyLabels = {};
+    for (const id of SANKEY_NODES) {
+      const value = (stored as Record<string, unknown>)[id];
+      if (typeof value === "string" && value.trim() && value.length <= MAX_LABEL)
+        labels[id] = value.trim();
+    }
+    return labels;
+  } catch {
+    return {};
+  }
+}
+
+function saveLabels(labels: SankeyLabels) {
+  try {
+    localStorage.setItem(LABELS_KEY, JSON.stringify(labels));
+  } catch {
+    // Not persisted; the chart still uses them for this visit.
+  }
+}
+
 export function InsightsPage() {
   const [range, setRange] = useState<RangeId>("all");
   const since = useMemo(() => {
     const days = RANGES.find((r) => r.id === range)?.days ?? null;
     return days === null ? null : new Date(Date.now() - days * DAY_MS).toISOString();
   }, [range]);
-  const insights = useInsights(since);
+  const [labels, setLabels] = useState<SankeyLabels>(loadLabels);
+  const insights = useInsights(since, labels);
   const data = insights.data;
   const loading = insights.isFetching && insights.isPlaceholderData;
 
@@ -72,6 +102,11 @@ export function InsightsPage() {
               data={data.sankey}
               stats={data.stats}
               rangeLabel={RANGES.find((r) => r.id === range)?.label ?? ""}
+              labels={labels}
+              onLabelsChange={(next) => {
+                setLabels(next);
+                saveLabels(next);
+              }}
             />
           </div>
         )
@@ -139,15 +174,20 @@ function SankeyCard({
   data,
   stats,
   rangeLabel,
+  labels,
+  onLabelsChange,
 }: {
   data: SankeyData;
   stats: Stats;
   rangeLabel: string;
+  labels: SankeyLabels;
+  onLabelsChange: (labels: SankeyLabels) => void;
 }) {
   const frame = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const [hover, setHover] = useState<Hover>(null);
   const [asTable, setAsTable] = useState(false);
+  const [renaming, setRenaming] = useState(false);
   const [copied, setCopied] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState<unknown>(null);
@@ -169,7 +209,7 @@ function SankeyCard({
   );
 
   const total = data.links
-    .filter((l) => data.nodes[l.source]?.name === "Applied")
+    .filter((l) => data.nodes[l.source]?.ids.includes("applied"))
     .reduce((s, l) => s + l.value, 0);
 
   const download = async () => {
@@ -225,6 +265,16 @@ function SankeyCard({
           <button
             type="button"
             className="btn btn-small"
+            onClick={() => setRenaming((v) => !v)}
+            aria-expanded={renaming}
+            aria-controls="sankey-labels"
+          >
+            <PenLine />
+            Rename labels
+          </button>
+          <button
+            type="button"
+            className="btn btn-small"
             onClick={() => setAsTable((v) => !v)}
             aria-pressed={asTable}
           >
@@ -255,6 +305,16 @@ function SankeyCard({
         </div>
       </figcaption>
       {exportError !== null && <ErrorBanner error={exportError} />}
+      {renaming && (
+        <LabelEditor
+          // Re-mount on change so the inputs show what was applied (including a reset).
+          key={JSON.stringify(labels)}
+          ids={data.nodes.flatMap((n) => n.ids)}
+          labels={labels}
+          onApply={onLabelsChange}
+          onClose={() => setRenaming(false)}
+        />
+      )}
 
       {asTable ? (
         <FlowTable data={data} />
@@ -262,6 +322,7 @@ function SankeyCard({
         <div className="chart-frame" ref={frame} onPointerLeave={() => setHover(null)}>
           {layout && (
             <svg
+              className="chart-svg"
               width={chartWidth}
               height={height}
               viewBox={`0 0 ${chartWidth} ${height}`}
@@ -310,6 +371,72 @@ function SankeyCard({
         </div>
       )}
     </figure>
+  );
+}
+
+/** One input per built-in node in the chart; blank means the default name. */
+function LabelEditor({
+  ids,
+  labels,
+  onApply,
+  onClose,
+}: {
+  ids: SankeyNodeId[];
+  labels: SankeyLabels;
+  onApply: (labels: SankeyLabels) => void;
+  onClose: () => void;
+}) {
+  const present = SANKEY_NODES.filter((id) => ids.includes(id));
+  const renamed = Object.keys(labels).length > 0;
+
+  const submit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    // Labels for nodes outside this date range are kept, not dropped.
+    const next: SankeyLabels = { ...labels };
+    for (const id of present) {
+      const value = String(form.get(id) ?? "").trim();
+      if (value && value !== DEFAULT_SANKEY_LABELS[id]) next[id] = value;
+      else delete next[id];
+    }
+    onApply(next);
+  };
+
+  return (
+    <form id="sankey-labels" className="label-editor" onSubmit={submit}>
+      <p className="field-hint">
+        Name the steps your way. Nodes given the same name merge into one, as in SankeyMATIC. The
+        PNG and the copied text use these names too.
+      </p>
+      <div className="label-grid">
+        {present.map((id) => (
+          <label key={id} className="field">
+            <span className="field-label">{DEFAULT_SANKEY_LABELS[id]}</span>
+            <input
+              className="input"
+              name={id}
+              maxLength={MAX_LABEL}
+              placeholder={DEFAULT_SANKEY_LABELS[id]}
+              defaultValue={labels[id] ?? ""}
+            />
+          </label>
+        ))}
+      </div>
+      <div className="form-actions">
+        <button type="submit" className="btn btn-small btn-primary">
+          Apply
+        </button>
+        {renamed && (
+          <button type="button" className="btn btn-small btn-quiet" onClick={() => onApply({})}>
+            Reset to defaults
+          </button>
+        )}
+        <span className="spacer" />
+        <button type="button" className="btn btn-small btn-quiet" onClick={onClose}>
+          Done
+        </button>
+      </div>
+    </form>
   );
 }
 

@@ -117,21 +117,32 @@ Responses include derived state computed by `core`, so the client never re-deriv
 
 | Method & path | Purpose |
 |---|---|
+| `GET /health` · `GET /config` | Public. Liveness, and which sign-in providers and features are enabled |
+| `/auth/*` | Public. Better Auth (magic link, Google, Microsoft) |
+| `GET /me` | The signed-in user |
 | `GET /applications?status=&stage=&q=` | List with derived status, stage, age and ghost flag |
 | `POST /applications` | Manual create (also appends an `applied` event) |
 | `GET /applications/:id` | Static facts + full event timeline with evidence |
 | `PATCH /applications/:id` | Edit static facts (company, position, url…) |
 | `DELETE /applications/:id` | Hard delete, e.g. a duplicate created from a bad email |
+| `POST /applications/:id/seen` · `POST /applications/seen` | Clear the "new" markers on one application, or all |
 | `POST /applications/:id/events` | Append `advanced` / `closed` / `noted` (validated by `core`) |
 | `POST /events/:id/void` | Undo: appends a `voided` event |
 | `GET /review` | Messages with status `needs_review`, with suggested actions |
 | `POST /review/:messageId` | Resolve: `confirm` / `assign {applicationId}` / `create` / `ignore` |
 | `GET /stats?since=` | Funnel, rates, median time to first response |
-| `GET /sankey?since=` | `{ nodes, links, sankeymatic }` |
+| `GET /sankey?since=&labels=` | `{ nodes, links, sankeymatic }`. `labels` is JSON renaming built-in nodes, e.g. `{"no_response":"Ghosted"}`; nodes with the same label merge |
 | `GET /mail-sources` · `POST /mail-sources/forwarding` · `POST /mail-sources/:id/rotate` | Forwarding address lifecycle and status |
+| `PATCH /mail-sources/:id` | Set or clear the verified forwarding mailbox |
+| `GET /messages?status=&limit=` | Recent emails and what the pipeline did with them (never bodies) |
 | `POST /messages/upload` | Upload `.eml` files (backfill, Yahoo free accounts, testing) |
-| `GET /settings` · `PATCH /settings` | Ghost threshold, time zone, retention, digest |
-| `GET /export` · `DELETE /account` | Data export (JSON + CSV) and account deletion |
+| `GET /settings` · `PATCH /settings` | Ghost threshold, time zone, raw-mail retention, automatic updates |
+| `GET /account/export` | Everything stored about the user as a JSON download (no raw email) |
+| `DELETE /account` | Body `{"confirm":"delete my account"}`. Deletes raw mail, then the user row, which cascades to everything else |
+
+Outside the API, the Worker also handles inbound email (`email()`), the classification
+queue (`queue()`) and a daily retention job (`scheduled()`, 03:17 UTC) that purges expired
+raw mail and week-old filtered-out records.
 
 ## Environments
 
