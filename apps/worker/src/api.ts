@@ -11,7 +11,9 @@ export const app = new Hono<AppEnv>().basePath("/api");
 
 app.on(["GET", "POST"], "/auth/*", (c) => createAuth(c.env).handler(c.req.raw));
 app.get("/health", (c) => c.json({ ok: true }));
-app.get("/config", (c) => c.json({ providers: enabledProviders(c.env) }));
+app.get("/config", (c) =>
+  c.json({ providers: enabledProviders(c.env), classifier: Boolean(c.env.ANTHROPIC_API_KEY) }),
+);
 app.get("/me", requireUser, (c) => c.json({ user: c.get("user") }));
 
 app.route("/applications", applications);

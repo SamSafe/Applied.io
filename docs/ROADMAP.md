@@ -83,19 +83,22 @@ matching table is a passing test.
 
 - [x] Forwarding address: issue and rotate, `mail_source` status (API only; UI in this
       milestone).
-- [ ] Onboarding screen: Gmail steps, filter recipe with a copy button, live "waiting for
-      first email…" check, Gmail confirmation code display.
+- [x] Onboarding screen: Gmail steps, filter recipe with a copy button, live "waiting for
+      first email…" check, Gmail confirmation code display. (In Settings, with Outlook and
+      other-provider steps, the forwarding mailbox, and a "Recent emails" list.)
 - [x] `email()`: reject unknown addresses, size cap, drop duplicates by Message-ID,
       store to R2, insert row, enqueue.
-- [ ] Parser: `postal-mime`, forward unwrapping (Gmail, Outlook, rfc822 attachment),
+- [x] Parser: `postal-mime`, forward unwrapping (Gmail, Outlook, Apple, rfc822 attachment),
       HTML → text, quote/signature stripping.
-- [ ] Sender verification v1 (from S1 findings).
-- [ ] Prefilter + seed ATS sender list.
-- [ ] Classifier: prompt + zod schema + `messages.parse`. Store the classification,
+- [x] Sender verification v1. *Provisional: built from known Gmail behaviour; re-check
+      against S1 findings.*
+- [x] Prefilter + seed ATS sender list.
+- [x] Classifier: prompt + zod schema + `messages.parse`. Store the classification,
       version and model.
-- [ ] `POST /messages/upload` for `.eml` files.
+- [x] `POST /messages/upload` for `.eml` files.
 - [ ] Eval: export ≥ 100 of your own job emails into `fixtures/private/`, label them,
-      `pnpm eval` runner. Redacted public subset in CI.
+      `pnpm eval` runner. Redacted public subset in CI. *(Runner, labelling helper and a
+      27-email synthetic public corpus are done; your private corpus is still needed.)*
 - [ ] Run the eval on `claude-haiku-5-5` (the chosen model). If it misses the targets,
       fix the prompt first, then try a larger model (see
       [EMAIL_PIPELINE.md](EMAIL_PIPELINE.md#model-and-cost)).
@@ -108,8 +111,8 @@ matching table is a passing test.
 - [ ] Auto-apply gate.
 - [ ] Review queue API + UI (confirm / pick another / create / ignore).
 - [ ] Timeline: "from email" badge, evidence quote, one-click undo.
-- [ ] Reliability: retries, dead-letter queue, `failed` status with the reason shown,
-      per-user daily cap.
+- [x] Reliability: retries, dead-letter queue, `failed` status with the reason shown,
+      per-user daily cap. (Built with the M3 pipeline.)
 
 **Done when:** across two weeks of your real search, ≥ 80% of events arrive with zero
 typing, auto-applied precision is ≥ 97%, and review is ≤ 10% of relevant emails.

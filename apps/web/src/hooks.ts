@@ -9,6 +9,7 @@ export const keys = {
   app: (id: string) => ["apps", "detail", id] as const,
   settings: ["settings"] as const,
   sources: ["sources"] as const,
+  messages: ["messages"] as const,
 };
 
 export function useMe() {
@@ -53,6 +54,45 @@ export function useMailSources() {
   return useQuery({
     queryKey: keys.sources,
     queryFn: () => api.mailSources().then((r) => r.sources),
+    // While setup is underway, watch for the first email and Gmail's confirmation code.
+    refetchInterval: (query) =>
+      query.state.data?.some(
+        (s) =>
+          s.kind === "forwarding" && (s.status === "awaiting_first_mail" || !s.verifiedMailbox),
+      )
+        ? 8000
+        : false,
+  });
+}
+
+export function useSetVerifiedMailbox() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, mailbox }: { id: string; mailbox: string | null }) =>
+      api.setVerifiedMailbox(id, mailbox),
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.sources }),
+  });
+}
+
+export function useMessages() {
+  return useQuery({
+    queryKey: keys.messages,
+    queryFn: () => api.messages().then((r) => r.messages),
+    // Emails move through the queue in seconds; follow along while any are still in flight.
+    refetchInterval: (query) =>
+      query.state.data?.some(
+        (m) => m.status === "received" && Date.now() - Date.parse(m.receivedAt) < 120_000,
+      )
+        ? 5000
+        : 30000,
+  });
+}
+
+export function useUpload() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: api.upload,
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.messages }),
   });
 }
 

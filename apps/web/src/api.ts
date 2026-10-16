@@ -76,13 +76,47 @@ export interface Settings {
 
 export interface MailSource {
   id: string;
-  kind: "forwarding" | "gmail" | "graph";
+  kind: "forwarding" | "upload" | "gmail" | "graph";
   status: "awaiting_first_mail" | "active" | "revoked";
   address: string | null;
   providerHint: string | null;
+  verifiedMailbox: string | null;
+  confirmation: { code: string; mailbox: string; receivedAt: string } | null;
   lastMessageAt: string | null;
   createdAt: string;
 }
+
+export type MessageStatus =
+  | "received"
+  | "filtered_out"
+  | "needs_review"
+  | "applied"
+  | "ignored"
+  | "failed";
+
+/** What the pipeline did with one forwarded email (never its body). */
+export interface InboxMessage {
+  id: string;
+  receivedAt: string;
+  status: MessageStatus;
+  from: string | null;
+  subject: string | null;
+  sentAt: string | null;
+  senderVerified: boolean;
+  category: string | null;
+  company: string | null;
+  position: string | null;
+  certainty: string | null;
+  evidence: string | null;
+  filterReason: string | null;
+  senderReason: string | null;
+  failure: string | null;
+}
+
+export type UploadResult = {
+  name: string;
+  status: "queued" | "duplicate" | "too_large" | "invalid";
+};
 
 export interface FactsInput {
   company?: string;
@@ -114,7 +148,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     credentials: "same-origin",
     ...init,
     headers: {
-      ...(init.body !== undefined ? { "content-type": "application/json" } : {}),
+      ...(typeof init.body === "string" ? { "content-type": "application/json" } : {}),
       ...init.headers,
     },
   });
@@ -143,7 +177,7 @@ const json = (method: string, body?: unknown): RequestInit => ({
 
 export const api = {
   me: () => request<{ user: User }>("/api/me"),
-  config: () => request<{ providers: Provider[] }>("/api/config"),
+  config: () => request<{ providers: Provider[]; classifier: boolean }>("/api/config"),
 
   list: (status: StatusFilter, q: string) => {
     const params = new URLSearchParams();
@@ -176,6 +210,18 @@ export const api = {
     request<{ source: MailSource }>("/api/mail-sources/forwarding", json("POST")),
   rotate: (id: string) =>
     request<{ source: MailSource }>(`/api/mail-sources/${id}/rotate`, json("POST")),
+  setVerifiedMailbox: (id: string, verifiedMailbox: string | null) =>
+    request<{ source: MailSource }>(`/api/mail-sources/${id}`, json("PATCH", { verifiedMailbox })),
+
+  messages: (limit = 15) => request<{ messages: InboxMessage[] }>(`/api/messages?limit=${limit}`),
+  upload: (files: File[]) => {
+    const form = new FormData();
+    for (const f of files) form.append("files", f);
+    return request<{ results: UploadResult[] }>("/api/messages/upload", {
+      method: "POST",
+      body: form,
+    });
+  },
 
   sendMagicLink: (email: string) =>
     request<{ status: boolean }>(

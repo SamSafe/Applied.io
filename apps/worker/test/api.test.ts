@@ -10,7 +10,7 @@ describe("api", () => {
 
   it("lists the sign-in methods enabled here", async () => {
     const res = await call("/api/config");
-    expect(await res.json()).toEqual({ providers: ["magic-link"] });
+    expect(await res.json()).toEqual({ providers: ["magic-link"], classifier: false });
   });
 
   it("rejects protected routes without a session", async () => {

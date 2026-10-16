@@ -68,7 +68,7 @@ export async function processMessage(
 ): Promise<void> {
   const db = getDb(env);
   const found = await getMessageForProcessing(db, messageId);
-  if (!found || found.message.status !== "received" || !found.message.rawKey) return;
+  if (found?.message.status !== "received" || !found.message.rawKey) return;
   const { message, source } = found;
 
   const object = await env.RAW_MAIL.get(message.rawKey as string);

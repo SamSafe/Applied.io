@@ -292,6 +292,9 @@ function Onboarding() {
           Get my forwarding address
         </button>
       )}
+      <Link href="/settings#forwarding" className="btn btn-small btn-quiet">
+        Set up forwarding from Gmail or Outlook
+      </Link>
       <p className="field-hint">Or add one by hand. Applications you add work exactly the same.</p>
       <Link href="/new" className="btn">
         <Plus />

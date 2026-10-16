@@ -1,139 +1,30 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Check, Inbox, LogOut, RefreshCw } from "lucide-react";
-import { type FormEvent, useMemo, useState } from "react";
+import { Check, LogOut } from "lucide-react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
-import { api, type MailSource, type User } from "../api";
-import { CopyButton, ErrorBanner } from "../components/bits";
-import { ago } from "../format";
-import {
-  useCreateForwarding,
-  useMailSources,
-  useRotateForwarding,
-  useSettings,
-  useUpdateSettings,
-} from "../hooks";
+import { api, type User } from "../api";
+import { ErrorBanner } from "../components/bits";
+import { ForwardingSection, RecentEmailsSection } from "../components/Forwarding";
+import { Section } from "../components/Section";
+import { useSettings, useUpdateSettings } from "../hooks";
 
 export function SettingsPage({ user }: { user: User }) {
+  // Deep links like /settings#forwarding: scroll once the section has rendered.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (id) document.getElementById(id)?.scrollIntoView({ block: "start" });
+  }, []);
+
   return (
     <div className="settings">
       <div className="page-head">
         <h1 className="page-title">Settings</h1>
       </div>
       <ForwardingSection />
+      <RecentEmailsSection />
       <GhostingSection />
       <TimeZoneSection />
       <AccountSection user={user} />
-    </div>
-  );
-}
-
-function Section({
-  title,
-  lede,
-  children,
-}: {
-  title: string;
-  lede: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="settings-section">
-      <div>
-        <h2>{title}</h2>
-        <p className="lede">{lede}</p>
-      </div>
-      <div className="settings-body">{children}</div>
-    </section>
-  );
-}
-
-function ForwardingSection() {
-  const sources = useMailSources();
-  const create = useCreateForwarding();
-  const forwarding =
-    sources.data?.filter((s) => s.kind === "forwarding" && s.status !== "revoked") ?? [];
-
-  return (
-    <Section
-      title="Forwarding address"
-      lede="Forward job emails here, or point an email filter at it, and they'll update your pipeline."
-    >
-      {sources.error && <ErrorBanner error={sources.error} onRetry={() => sources.refetch()} />}
-      {forwarding.map((s) => (
-        <ForwardingAddress key={s.id} source={s} />
-      ))}
-      {sources.data && forwarding.length === 0 && (
-        <div>
-          <button
-            type="button"
-            className="btn btn-primary"
-            disabled={create.isPending}
-            onClick={() => create.mutate()}
-          >
-            <Inbox />
-            Get my forwarding address
-          </button>
-        </div>
-      )}
-      <p className="field-hint">
-        Emails you forward are stored now. Reading them to update applications automatically is the
-        next feature to launch.
-      </p>
-    </Section>
-  );
-}
-
-function ForwardingAddress({ source }: { source: MailSource }) {
-  const rotate = useRotateForwarding();
-  const [confirming, setConfirming] = useState(false);
-  if (!source.address) return null;
-
-  return (
-    <div style={{ display: "grid", gap: "0.6rem" }}>
-      <div className="address">
-        <code>{source.address}</code>
-        <CopyButton text={source.address} />
-      </div>
-      <span className="status-note">
-        {source.status === "active" && source.lastMessageAt ? (
-          <>
-            <Check width={15} height={15} aria-hidden="true" />
-            Receiving · last email {ago(source.lastMessageAt)}
-          </>
-        ) : (
-          "Waiting for the first email"
-        )}
-      </span>
-      {confirming ? (
-        <div className="confirm" role="alert">
-          <p>
-            Mail sent to the current address will be rejected. Update your email filter afterwards.
-          </p>
-          <button
-            type="button"
-            className="btn btn-small btn-quiet"
-            onClick={() => setConfirming(false)}
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            className="btn btn-small btn-danger-solid"
-            disabled={rotate.isPending}
-            onClick={() => rotate.mutate(source.id, { onSuccess: () => setConfirming(false) })}
-          >
-            Replace address
-          </button>
-        </div>
-      ) : (
-        <div>
-          <button type="button" className="btn btn-small" onClick={() => setConfirming(true)}>
-            <RefreshCw />
-            Get a new address
-          </button>
-        </div>
-      )}
-      {rotate.error && <ErrorBanner error={rotate.error} />}
     </div>
   );
 }

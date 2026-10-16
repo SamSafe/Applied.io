@@ -30,7 +30,11 @@ colors:
   stage-ghosted: "#9aa0a6"
   closed: "#b9bec2"
   danger: "#a8341f"
+  danger-raised: "#8f2b18"
   danger-soft: "#fbece8"
+  danger-edge: "#efc4b9"
+  danger-ink: "#6e2213"
+  selection: "#cfe3d9"
 typography:
   headline:
     fontFamily: "Archivo Variable, ui-sans-serif, system-ui, sans-serif"
@@ -46,6 +50,18 @@ typography:
     lineHeight: 1.05
     letterSpacing: "-0.015em"
     fontVariation: "'wdth' 86"
+  headline-sm:
+    fontFamily: "Archivo Variable, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.6rem"
+    fontWeight: 720
+    lineHeight: 1.12
+    letterSpacing: "-0.01em"
+    fontVariation: "'wdth' 86"
+  title-lg:
+    fontFamily: "Archivo Variable, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.2rem"
+    fontWeight: 700
+    lineHeight: 1.2
   title:
     fontFamily: "Archivo Variable, ui-sans-serif, system-ui, sans-serif"
     fontSize: "1rem"
@@ -62,12 +78,19 @@ typography:
     fontSize: "0.87rem"
     fontWeight: 600
     lineHeight: 1.3
+  micro:
+    fontFamily: "Archivo Variable, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.75rem"
+    fontWeight: 650
+    lineHeight: 1.2
   mono:
     fontFamily: "ui-monospace, SF Mono, Cascadia Mono, Menlo, Consolas, monospace"
     fontSize: "0.82rem"
     fontWeight: 400
     letterSpacing: "0.04em"
 rounded:
+  hairline: "2px"
+  xs: "4px"
   sm: "6px"
   md: "10px"
   pill: "999px"
@@ -194,7 +217,10 @@ encoding, and one reserved signal colour.
 - **Rule** (`line`) and **Strong Rule** (`line-strong`): dividers and control borders.
 - **Ink** (`ink`), **Ink 2** (`ink-2`, secondary text), **Ink 3** (`ink-3`, tertiary text,
   ≥4.5:1 on white).
-- **Danger** (`danger`) on **Danger Soft** (`danger-soft`): destructive confirmations only.
+- **Danger** (`danger`, hover **Danger Raised** `danger-raised`) on **Danger Soft** (`danger-soft`)
+  with **Danger Edge** (`danger-edge`) borders and **Danger Ink** (`danger-ink`) text: destructive
+  confirmations and error banners only.
+- **Selection** (`selection`): the text-selection highlight, a pale spruce.
 
 ### Named Rules
 **The Scan Yellow Rule.** Yellow means "new since your last visit" and nothing else. It is
@@ -225,9 +251,14 @@ tabular figures.
   label's company name uses 720 at 1.6rem.
 - **Status** (720, 1.9rem, 1.05): the status word that leads the detail panel ("Offer",
   "Interview", "Ghosted").
+- **Headline small** (720, 1.6rem, 1.12): the detail label's company name, the sign-in title,
+  and page titles on phones.
+- **Title large** (700, 1.2rem): form headings ("Edit details"), empty-state headings, the
+  wordmark, and the Gmail confirmation code (in mono).
 - **Title** (640, 1rem, 92% width): company names in rows. Section titles use 680.
 - **Body** (400, 15px, 1.45): everything readable. Notes keep a 65–75ch measure.
-- **Label** (600, 0.87rem): field labels, chips (0.88rem), and axis ticks (0.78rem).
+- **Label** (600, 0.87rem): field labels and chips.
+- **Micro** (650, 0.75rem): axis ticks, count pills, "New", step numbers, keyboard hints.
 - **Mono** (0.82rem, +0.04em tracking): the "Ref" and forwarding addresses.
 
 ### Named Rules
@@ -273,7 +304,9 @@ nothing.
 
 ## Shapes
 
-Gently rounded label corners: 6px on controls and 10px on boards, panels and strips.
+Gently rounded label corners: 6px on controls and 10px on boards, panels and strips. Small
+inner parts (segmented-control segments, keyboard hints, skeleton bars) use 4px, and hairline
+geometry (tracking segments, active underlines) uses 2px.
 Counts and "New" use full pills, and tracking nodes are circles. One material detail is
 allowed: the **perforation**, a 2px dashed rule that separates the detail panel's label
 head from its body, like the tear line on label stock.
