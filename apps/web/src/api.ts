@@ -51,6 +51,13 @@ export interface HistoryEvent {
   note?: string | null;
   voided: boolean;
   unseen: boolean;
+  /** The email behind this step, and any later emails attached to it as evidence. */
+  emails: {
+    subject: string | null;
+    from: string | null;
+    sentAt: string | null;
+    evidence: string | null;
+  }[];
 }
 
 export interface Detail extends Summary {
@@ -110,8 +117,53 @@ export interface InboxMessage {
   evidence: string | null;
   filterReason: string | null;
   senderReason: string | null;
+  reviewReasons: string[];
+  applicationId: string | null;
   failure: string | null;
 }
+
+export type Proposal =
+  | { kind: "create" }
+  | { kind: "advance"; stage: AdvanceStage }
+  | { kind: "close"; outcome: Outcome }
+  | { kind: "evidence" }
+  | { kind: "none" };
+
+export interface ReviewCandidate {
+  applicationId: string;
+  company: string;
+  position: string;
+  maxStage: Stage;
+  status: Status;
+  score: number | null;
+}
+
+/** An email the pipeline wasn't sure about, waiting for the user's decision. */
+export interface ReviewItem {
+  id: string;
+  receivedAt: string;
+  sentAt: string | null;
+  subject: string | null;
+  from: string | null;
+  senderVerified: boolean;
+  category: string | null;
+  interviewKind: string | null;
+  company: string | null;
+  position: string | null;
+  certainty: "high" | "medium" | "low" | null;
+  evidence: string | null;
+  failure: string | null;
+  reasons: string[];
+  proposal: Proposal | null;
+  suggestion: { kind: "create" | "append" | "pick" | "create_and_append" } | null;
+  candidates: ReviewCandidate[];
+}
+
+export type ReviewAction =
+  | { action: "confirm" }
+  | { action: "assign"; applicationId: string }
+  | { action: "create"; company?: string; position?: string }
+  | { action: "ignore" };
 
 export type UploadResult = {
   name: string;
@@ -212,6 +264,10 @@ export const api = {
     request<{ source: MailSource }>(`/api/mail-sources/${id}/rotate`, json("POST")),
   setVerifiedMailbox: (id: string, verifiedMailbox: string | null) =>
     request<{ source: MailSource }>(`/api/mail-sources/${id}`, json("PATCH", { verifiedMailbox })),
+
+  review: () => request<{ items: ReviewItem[] }>("/api/review"),
+  resolveReview: (id: string, action: ReviewAction) =>
+    request<{ applicationId: string | null }>(`/api/review/${id}`, json("POST", action)),
 
   messages: (limit = 15) => request<{ messages: InboxMessage[] }>(`/api/messages?limit=${limit}`),
   upload: (files: File[]) => {

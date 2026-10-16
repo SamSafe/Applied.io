@@ -154,7 +154,7 @@ similarity (token overlap on `position_key`), open versus closed, recency.
 | Status email, exactly one open application at the company | Match. The position may be missing, since company-level rejections often omit it. If the email names a clearly different title (similarity < 0.25), send to review instead. |
 | Status email, several open applications | Best title similarity ≥ 0.6 **and** ≥ 0.2 ahead of the next → match; otherwise review "which application?" |
 | Status email, no application found | Review: "Create an application from this email?" |
-| Email about a **closed** application (the only matches are closed, or a closed one beats every open one by ≥ 0.2) | Review (possible re-engagement) |
+| Email about a **closed** application (the only matches are closed, or a closed one beats every open one by ≥ 0.2) | Attach as evidence if it repeats the closing (a second rejection); otherwise review (possible re-engagement) |
 | Same stage as an event within the last 14 days | Attach as evidence, no new event (invite, confirmation and reminder all describe one step) |
 
 ## Decide: the auto-apply gate
@@ -166,14 +166,31 @@ An event is applied automatically **only if all** of these hold:
 - it passes `core.validate`
 - the user has `auto_apply` on
 
-Otherwise it goes to review. Every automated event shows an "from email" badge with the
+Otherwise it goes to review. Every automated event shows a "from an email" line with the
 evidence quote and a one-click **Undo**, which appends a `voided` event.
+
+Outcomes that change nothing (attaching a repeat confirmation, a reminder for a step already
+recorded, interview logistics) happen without the gate, because they only link the email
+as evidence.
+
+The decision is made by `plan()` in `packages/mail/src/classify/plan.ts`, a pure function
+of the classification, the user's applications and the trust signals. The Worker only
+executes it (`apps/worker/src/apply.ts`). An email over the daily classification cap goes
+to review unclassified, so it's never dropped.
 
 ## Review queue
 
-One card per message: suggested action, evidence quote, sender and date, and buttons
-**Confirm / Pick another application / Create new / Ignore**. Resolving a card writes the
-event exactly like the automatic path. Target: at most 10% of relevant emails need review.
+One card per message (`/review`): what the email says, the step it would record, why it's
+waiting, the evidence quote, and actions that fit the suggestion:
+- **create**: editable company and role, then **Create application**.
+- **append** or **pick**: the likely applications with their stage, any other application,
+  then **Record on this application**.
+- **create and append**: create the application and record the step in one go.
+- **Ignore** on every card.
+
+Resolving a card writes through the same paths as automation. A step the application
+already has is attached instead of duplicated. The application is then marked seen, since
+the user just made the decision. Target: at most 10% of relevant emails need review.
 
 ## Model and cost
 

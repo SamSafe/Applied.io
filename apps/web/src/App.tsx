@@ -4,6 +4,7 @@ import { ErrorBanner, Mark } from "./components/bits";
 import { Shell } from "./components/Shell";
 import { useMe } from "./hooks";
 import { Pipeline } from "./pages/Pipeline";
+import { ReviewPage } from "./pages/Review";
 import { SettingsPage } from "./pages/Settings";
 import { SignIn } from "./pages/SignIn";
 
@@ -32,6 +33,9 @@ export function App() {
       <Switch>
         <Route path="/settings">
           <SettingsPage user={user} />
+        </Route>
+        <Route path="/review">
+          <ReviewPage />
         </Route>
         <Route>
           <Pipeline />

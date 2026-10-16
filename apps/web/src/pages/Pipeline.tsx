@@ -10,6 +10,7 @@ import {
   useCreateForwarding,
   useMailSources,
   useMarkSeen,
+  useReview,
   useTimeZone,
 } from "../hooks";
 import { DetailPanel } from "./Detail";
@@ -61,6 +62,7 @@ export function Pipeline() {
         {list.data && list.data.counts.updates > 0 && (
           <UpdatesStrip count={list.data.counts.updates} />
         )}
+        <ReviewBanner />
         <Tabs status={status} counts={list.data?.counts} search={params} />
         {list.error ? (
           <div style={{ marginTop: "1rem" }}>
@@ -124,6 +126,23 @@ function UpdatesStrip({ count }: { count: number }) {
       >
         Mark all seen
       </button>
+    </div>
+  );
+}
+
+/** Quiet, unlike the updates strip: these emails wait for a decision, they aren't news. */
+function ReviewBanner() {
+  const count = useReview().data?.length ?? 0;
+  if (count === 0) return null;
+  return (
+    <div className="review-banner" role="status">
+      <p>
+        {count} {count === 1 ? "email needs" : "emails need"} your review before{" "}
+        {count === 1 ? "it changes" : "they change"} anything
+      </p>
+      <Link href="/review" className="btn btn-small">
+        Review
+      </Link>
     </div>
   );
 }

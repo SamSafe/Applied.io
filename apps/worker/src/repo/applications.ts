@@ -29,6 +29,14 @@ export interface NewApplication {
   notes?: string | null;
 }
 
+/** Extra facts and provenance when an email creates the application. */
+export interface FromEmail {
+  companyDomain: string | null;
+  ats: string | null;
+  messageId: string;
+  certainty: "high" | "medium" | "low" | null;
+}
+
 export type FactsPatch = Partial<Omit<NewApplication, "appliedAt">>;
 
 export async function listApplications(db: Db, userId: string): Promise<StoredApplication[]> {
@@ -63,8 +71,10 @@ export async function createApplication(
   userId: string,
   input: NewApplication,
   now: Date,
-): Promise<string> {
+  fromEmail?: FromEmail,
+): Promise<{ id: string; eventId: string }> {
   const id = newId();
+  const eventId = newId();
   await db.batch([
     db.insert(application).values({
       id,
@@ -78,20 +88,24 @@ export async function createApplication(
       url: input.url ?? null,
       source: input.source ?? null,
       notes: input.notes ?? null,
-      createdVia: "manual",
+      companyDomain: fromEmail?.companyDomain ?? null,
+      ats: fromEmail?.ats ?? null,
+      createdVia: fromEmail ? "email" : "manual",
       createdAt: now.toISOString(),
     }),
     db.insert(event).values({
-      id: newId(),
+      id: eventId,
       applicationId: id,
       userId,
       type: "applied",
       occurredAt: input.appliedAt,
       recordedAt: now.toISOString(),
-      origin: "manual",
+      origin: fromEmail ? "email" : "manual",
+      messageId: fromEmail?.messageId ?? null,
+      certainty: fromEmail?.certainty ?? null,
     }),
   ]);
-  return id;
+  return { id, eventId };
 }
 
 export async function updateFacts(

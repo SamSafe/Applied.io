@@ -1,5 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { api, type Detail, type FactsInput, type StatusFilter, type StepInput } from "./api";
+import {
+  api,
+  type Detail,
+  type FactsInput,
+  type ReviewAction,
+  type StatusFilter,
+  type StepInput,
+} from "./api";
 
 export const keys = {
   me: ["me"] as const,
@@ -10,6 +17,7 @@ export const keys = {
   settings: ["settings"] as const,
   sources: ["sources"] as const,
   messages: ["messages"] as const,
+  review: ["review"] as const,
 };
 
 export function useMe() {
@@ -168,5 +176,27 @@ export function useRotateForwarding() {
   return useMutation({
     mutationFn: api.rotate,
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.sources }),
+  });
+}
+
+export function useReview() {
+  return useQuery({
+    queryKey: keys.review,
+    queryFn: () => api.review().then((r) => r.items),
+    refetchInterval: 30_000,
+  });
+}
+
+export function useResolveReview() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, action }: { id: string; action: ReviewAction }) =>
+      api.resolveReview(id, action),
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: keys.review }),
+        qc.invalidateQueries({ queryKey: keys.apps }),
+        qc.invalidateQueries({ queryKey: keys.messages }),
+      ]),
   });
 }

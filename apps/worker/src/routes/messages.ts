@@ -88,6 +88,8 @@ function present(m: Message) {
     certainty: c?.certainty ?? null,
     evidence: m.evidence,
     filterReason: d?.prefilter?.reason ?? null,
+    reviewReasons: (m.review as { reasons?: string[] } | null)?.reasons ?? [],
+    applicationId: m.applicationId,
     senderReason: d?.sender?.reason ?? null,
     failure: m.failure,
   };

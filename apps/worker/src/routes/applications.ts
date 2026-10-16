@@ -7,9 +7,11 @@ import {
   toMs,
   unseenEvents,
 } from "@apptracker/core";
+import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";
 import { getDb } from "../db/client";
+import { message } from "../db/schema";
 import { type AppEnv, notFound, parseBody, requireUser } from "../http";
 import {
   appendEvent,
@@ -139,7 +141,7 @@ applications.post("/", async (c) => {
   if (inFuture(appliedAt, now)) return c.json({ error: "future_date" }, 422);
 
   const db = getDb(c.env);
-  const id = await createApplication(db, c.get("userId"), { ...body.data, appliedAt }, now);
+  const { id } = await createApplication(db, c.get("userId"), { ...body.data, appliedAt }, now);
   return c.json({ application: await loadDetail(c.env, c.get("userId"), id) }, 201);
 });
 
@@ -214,12 +216,28 @@ events.post("/:id/void", async (c) => {
 
 async function loadDetail(env: Env, userId: string, id: string) {
   const db = getDb(env);
-  const [app, settings] = await Promise.all([
+  const [app, settings, emails] = await Promise.all([
     getApplication(db, userId, id),
     getSettings(db, userId),
+    db
+      .select({
+        id: message.id,
+        eventId: message.eventId,
+        subject: message.subject,
+        from: message.fromAddress,
+        sentAt: message.sentAt,
+        evidence: message.evidence,
+      })
+      .from(message)
+      .where(and(eq(message.userId, userId), eq(message.applicationId, id))),
   ]);
   if (!app) return null;
   const derived = derive(app, new Date(), settings);
+  // The email behind each step, plus any later emails attached to it as evidence.
+  const emailsFor = (e: { id: string; messageId?: string | null }) =>
+    emails
+      .filter((m) => m.id === e.messageId || m.eventId === e.id)
+      .map(({ subject, from, sentAt, evidence }) => ({ subject, from, sentAt, evidence }));
   const voided = new Set(app.events.flatMap((e) => (e.type === "voided" ? [e.voidsEventId] : [])));
   const unseen = new Set(unseenEvents(app.events, app.seenAt).map((e) => e.id));
   return {
@@ -235,7 +253,12 @@ async function loadDetail(env: Env, userId: string, id: string) {
         (a, b) =>
           toMs(a.occurredAt) - toMs(b.occurredAt) || toMs(a.recordedAt) - toMs(b.recordedAt),
       )
-      .map((e) => ({ ...e, voided: voided.has(e.id), unseen: unseen.has(e.id) })),
+      .map((e) => ({
+        ...e,
+        voided: voided.has(e.id),
+        unseen: unseen.has(e.id),
+        emails: emailsFor(e),
+      })),
   };
 }
 

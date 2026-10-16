@@ -1,8 +1,9 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Plus, Search, Settings } from "lucide-react";
+import { Inbox, LogOut, Plus, Search, Settings } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useSearch } from "wouter";
 import { api, type User } from "../api";
+import { useReview } from "../hooks";
 import { Mark } from "./bits";
 
 const isTyping = (target: EventTarget | null) =>
@@ -50,6 +51,7 @@ export function Shell({ user, children }: { user: User; children: ReactNode }) {
   }, [navigate, search]);
 
   const keep = search ? `?${search}` : "";
+  const reviewCount = useReview().data?.length ?? 0;
 
   return (
     <>
@@ -62,6 +64,10 @@ export function Shell({ user, children }: { user: User; children: ReactNode }) {
           <nav className="shell-nav" aria-label="Main">
             <Link href={`/${keep}`} aria-current={onPipeline ? "page" : undefined}>
               Pipeline
+            </Link>
+            <Link href="/review" aria-current={location === "/review" ? "page" : undefined}>
+              Review
+              {reviewCount > 0 && <span className="nav-count num">{reviewCount}</span>}
             </Link>
             <Link href="/settings" aria-current={location === "/settings" ? "page" : undefined}>
               Settings
@@ -137,6 +143,10 @@ function AccountMenu({ user }: { user: User }) {
       {open && (
         <div className="menu" role="menu">
           <div className="menu-header">{user.email}</div>
+          <Link href="/review" className="menu-item" role="menuitem" onClick={() => setOpen(false)}>
+            <Inbox />
+            Review
+          </Link>
           <Link
             href="/settings"
             className="menu-item"

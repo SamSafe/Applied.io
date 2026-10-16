@@ -383,6 +383,12 @@ function History({ app }: { app: Detail }) {
                   {undone && ` · undone ${formatDate(undone, timeZone)}`}
                 </div>
                 {e.note && <p className="history-note">{e.note}</p>}
+                {e.emails.map((m) => (
+                  <div key={`${m.subject}-${m.sentAt}`} className="history-email">
+                    <span className="history-email-subject">{m.subject || "(no subject)"}</span>
+                    {m.evidence && <blockquote className="evidence">“{m.evidence}”</blockquote>}
+                  </div>
+                ))}
               </div>
               {e.type !== "applied" && !e.voided && (
                 <button

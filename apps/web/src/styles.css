@@ -1578,6 +1578,170 @@ textarea {
   font-size: 0.88rem;
 }
 
+/* ── Review ─────────────────────────────────────────────────────────────────────────── */
+
+.nav-count {
+  display: inline-block;
+  min-width: 1.3rem;
+  margin-left: 0.4rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.16);
+  color: var(--on-livery);
+  font-size: 0.75rem;
+  font-weight: 650;
+  text-align: center;
+}
+
+.review-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  margin-bottom: 1rem;
+  padding: 0.55rem 0.75rem 0.55rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+}
+
+.review-banner p {
+  margin-right: auto;
+  font-weight: 560;
+}
+
+.review {
+  max-width: 820px;
+}
+
+.review-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.review-card {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.1rem 1.25rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+}
+
+.review-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.review-subject {
+  min-width: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.review-when {
+  flex: none;
+  color: var(--ink-3);
+  font-size: 0.87rem;
+}
+
+.review-from {
+  margin-top: -0.4rem;
+  color: var(--ink-2);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.review-facts {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.3rem 1rem;
+  margin: 0;
+  font-size: 0.93rem;
+}
+
+.review-facts dt {
+  color: var(--ink-3);
+}
+
+.review-facts dd {
+  margin: 0;
+}
+
+.evidence {
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius-s);
+  background: var(--surface-sunk);
+  color: var(--ink-2);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.review-actions {
+  display: grid;
+  gap: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+}
+
+.choices {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choices legend {
+  margin-bottom: 0.4rem;
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  transition:
+    background-color 150ms var(--ease-out),
+    border-color 150ms var(--ease-out);
+}
+
+.choice:hover {
+  background: var(--surface-hover);
+}
+
+.choice:has(input:checked) {
+  border-color: var(--livery);
+  background: var(--surface-selected);
+}
+
+.choice input {
+  accent-color: var(--livery);
+}
+
+.choice-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.history-email {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+}
+
+.history-email-subject {
+  color: var(--ink-3);
+  font-size: 0.84rem;
+}
+
 /* ── Sign in ──────────────────────────────────────────────────────────────────────────── */
 
 .signin {

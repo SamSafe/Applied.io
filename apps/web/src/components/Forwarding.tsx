@@ -1,5 +1,6 @@
 import { Check, Inbox, Pencil, RefreshCw, Upload } from "lucide-react";
 import { type FormEvent, useRef, useState } from "react";
+import { Link } from "wouter";
 import type { InboxMessage, MailSource, UploadResult } from "../api";
 import { ago } from "../format";
 import {
@@ -374,7 +375,21 @@ export function RecentEmailsSection() {
                 </span>
                 {m.from && <span className="inbox-from">{m.from}</span>}
               </div>
-              <p className="inbox-detail">{detail(m, classifierOn)}</p>
+              <p className="inbox-detail">
+                {detail(m, classifierOn)}
+                {m.status === "needs_review" && (
+                  <>
+                    {" "}
+                    <Link href="/review">Review it</Link>
+                  </>
+                )}
+                {m.status === "applied" && m.applicationId && (
+                  <>
+                    {" "}
+                    <Link href={`/a/${m.applicationId}`}>Open application</Link>
+                  </>
+                )}
+              </p>
             </li>
           ))}
         </ul>

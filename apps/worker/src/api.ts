@@ -5,6 +5,7 @@ import { applications, events } from "./routes/applications";
 import { insights } from "./routes/insights";
 import { mailSources } from "./routes/mail-sources";
 import { messages } from "./routes/messages";
+import { review } from "./routes/review";
 import { settingsRoutes } from "./routes/settings";
 
 export const app = new Hono<AppEnv>().basePath("/api");
@@ -20,5 +21,6 @@ app.route("/applications", applications);
 app.route("/events", events);
 app.route("/mail-sources", mailSources);
 app.route("/messages", messages);
+app.route("/review", review);
 app.route("/settings", settingsRoutes);
 app.route("/", insights);

@@ -107,10 +107,11 @@ matching table is a passing test.
 
 ## M4 — Email: match → act (~4 days)
 
-- [ ] Matching + decision table + dedupe rules. Create/append/link in a single D1 batch.
-- [ ] Auto-apply gate.
-- [ ] Review queue API + UI (confirm / pick another / create / ignore).
-- [ ] Timeline: "from email" badge, evidence quote, one-click undo.
+- [x] Matching + decision table + dedupe rules. Create/append/link in a single D1 batch.
+      (`plan()` decides; the Worker executes.)
+- [x] Auto-apply gate.
+- [x] Review queue API + UI (confirm / pick another / create / ignore).
+- [x] Timeline: "from email" badge, evidence quote, one-click undo.
 - [x] Reliability: retries, dead-letter queue, `failed` status with the reason shown,
       per-user daily cap. (Built with the M3 pipeline.)
 

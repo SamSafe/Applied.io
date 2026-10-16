@@ -1,4 +1,5 @@
 export * from "./classify/classify";
+export * from "./classify/plan";
 export * from "./classify/prompt";
 export * from "./classify/propose";
 export * from "./classify/schema";

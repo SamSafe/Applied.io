@@ -79,7 +79,7 @@ beforeEach(async () => {
 afterEach(() => vi.restoreAllMocks());
 
 describe("processMessage", () => {
-  it("classifies relevant mail and keeps it for review", async () => {
+  it("classifies a verified confirmation and creates the application", async () => {
     await db()
       .update(mailSource)
       .set({ verifiedMailbox: "jane.seeker@gmail.com" })
@@ -90,7 +90,7 @@ describe("processMessage", () => {
 
     const after = await reload(row.id);
     expect(after).toMatchObject({
-      status: "needs_review",
+      status: "applied",
       fromAddress: "no-reply@hire.lever.co",
       fromDomain: "hire.lever.co",
       subject: "Thanks for applying to Northwind Payments",
@@ -99,6 +99,7 @@ describe("processMessage", () => {
       model: "claude-haiku-5-5",
       evidence: "We received your application",
     });
+    expect(after?.applicationId).toBeTruthy();
     expect(after?.diagnostics).toMatchObject({
       wrapper: "none",
       provider: "gmail",

@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import {
+  type Classification,
   ClassificationError,
   type ClassifierInput,
   type ClassifyResult,
@@ -10,14 +11,18 @@ import {
   domainOf,
   headerReport,
   parseEmail,
+  plan,
   prefilter,
   unwrap,
   verifySender,
 } from "@apptracker/mail";
 import { and, eq, isNull } from "drizzle-orm";
+import { executePlan } from "./apply";
 import { type Db, getDb } from "./db/client";
 import { mailSource } from "./db/schema";
+import { listApplications } from "./repo/applications";
 import { countClassifiedSince, type MessagePatch, updateMessage } from "./repo/messages";
+import { getSettings } from "./repo/settings";
 import { getMessageForProcessing } from "./repo/system";
 
 export interface MailQueueMessage {
@@ -48,9 +53,9 @@ export async function handleQueue(batch: MessageBatch<MailQueueMessage>, env: En
 }
 
 /**
- * Steps 2–5 of the pipeline (docs/EMAIL_PIPELINE.md): parse and unwrap, verify the sender,
- * prefilter, classify. Matching and applying (steps 6–8) arrive in M4; until then a classified
- * email waits in review. Only `received` messages are processed, so retries are idempotent.
+ * The pipeline (docs/EMAIL_PIPELINE.md): parse and unwrap, verify the sender, prefilter,
+ * classify, then match and act. Only `received` messages are processed, so retries are
+ * idempotent.
  */
 export type Classify = (input: ClassifierInput) => Promise<ClassifyResult>;
 
@@ -135,50 +140,81 @@ export async function processMessage(
     return;
   }
 
-  const startOfDay = new Date();
-  startOfDay.setUTCHours(0, 0, 0, 0);
-  if ((await countClassifiedSince(db, message.userId, startOfDay)) >= DAILY_CLASSIFICATION_CAP) {
-    await updateMessage(db, message.userId, message.id, {
-      ...facts,
-      status: "needs_review",
-      failure: "Daily classification limit reached",
-    });
-    return;
+  // A retry after a failed write reuses the stored classification instead of paying twice.
+  let classification = message.classifierVersion
+    ? (message.classification as Classification | null)
+    : null;
+  if (!classification) {
+    const startOfDay = new Date();
+    startOfDay.setUTCHours(0, 0, 0, 0);
+    if ((await countClassifiedSince(db, message.userId, startOfDay)) >= DAILY_CLASSIFICATION_CAP) {
+      // Over the cost cap: let the user file it by hand rather than drop it.
+      await updateMessage(db, message.userId, message.id, {
+        ...facts,
+        status: "needs_review",
+        failure: "Daily classification limit reached",
+        review: {
+          reasons: ["Applied reached today's limit for reading emails automatically"],
+          proposal: { kind: "none" },
+          suggestion: { kind: "create" },
+        },
+      });
+      return;
+    }
+    try {
+      const result = await classify({
+        from: original.from,
+        subject: original.subject,
+        sentAt: original.sentAt,
+        body,
+        forwardedBy: original.forwardedBy,
+      });
+      classification = result.classification;
+      await updateMessage(db, message.userId, message.id, {
+        ...facts,
+        classification,
+        classifierVersion: result.version,
+        model: result.model,
+        evidence: classification.evidence,
+      });
+    } catch (err) {
+      // Rate limits, overloads and outages are worth retrying; anything else won't fix itself.
+      const retryable =
+        err instanceof Anthropic.RateLimitError ||
+        err instanceof Anthropic.InternalServerError ||
+        err instanceof Anthropic.APIConnectionError;
+      if (retryable) throw err;
+      const reason =
+        err instanceof ClassificationError || err instanceof Anthropic.APIError
+          ? err.message
+          : String(err);
+      await updateMessage(db, message.userId, message.id, {
+        ...facts,
+        status: "failed",
+        failure: `Classification failed: ${reason}`,
+      });
+      return;
+    }
   }
 
-  try {
-    const result = await classify({
-      from: original.from,
-      subject: original.subject,
-      sentAt: original.sentAt,
-      body,
-      forwardedBy: original.forwardedBy,
-    });
-    await updateMessage(db, message.userId, message.id, {
-      ...facts,
-      status: "needs_review",
-      classification: result.classification,
-      classifierVersion: result.version,
-      model: result.model,
-      evidence: result.classification.evidence,
-    });
-  } catch (err) {
-    // Rate limits, overloads and outages are worth retrying; anything else won't fix itself.
-    const retryable =
-      err instanceof Anthropic.RateLimitError ||
-      err instanceof Anthropic.InternalServerError ||
-      err instanceof Anthropic.APIConnectionError;
-    if (retryable) throw err;
-    const reason =
-      err instanceof ClassificationError || err instanceof Anthropic.APIError
-        ? err.message
-        : String(err);
-    await updateMessage(db, message.userId, message.id, {
-      ...facts,
-      status: "failed",
-      failure: `Classification failed: ${reason}`,
-    });
-  }
+  // Steps 6–8: match, decide, act.
+  const [apps, settings] = await Promise.all([
+    listApplications(db, message.userId),
+    getSettings(db, message.userId),
+  ]);
+  const occurredAt = facts.sentAt ?? message.receivedAt;
+  const decided = plan({
+    classification,
+    apps,
+    occurredAt,
+    senderVerified: sender.verified,
+    autoApply: settings.autoApply,
+    messageId: message.id,
+    fromDomain: facts.fromDomain ?? null,
+    ats: filter.ats,
+  });
+  const fresh = await getMessageForProcessing(db, message.id);
+  if (fresh) await executePlan(db, fresh.message, decided, new Date());
 }
 
 async function setProviderHint(db: Db, userId: string, sourceId: string, provider: string) {
