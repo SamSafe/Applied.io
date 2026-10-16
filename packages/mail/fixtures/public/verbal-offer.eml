@@ -1,0 +1,18 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: Dana Reyes <dana.reyes@juniperstudios.example>
+To: jane.seeker@gmail.com
+Subject: Great news from Juniper Studios
+Date: Thu, 15 Oct 2026 23:05:00 +0000
+Message-ID: <js-vo-1@juniperstudios.example>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Hi Jane,
+
+Following up on our call this afternoon: the team was unanimous, and we'd like to offer you the Product Engineer role! I'll send the formal offer letter tomorrow once compensation is finalized.
+
+Congratulations, and talk soon,
+Dana

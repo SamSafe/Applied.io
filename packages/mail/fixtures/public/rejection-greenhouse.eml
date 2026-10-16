@@ -1,0 +1,21 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: Kestrel Robotics <no-reply@us.greenhouse-mail.io>
+To: jane.seeker@gmail.com
+Subject: Update on your application to Kestrel Robotics
+Date: Mon, 28 Sep 2026 16:45:00 +0000
+Message-ID: <gh-rej-5@us.greenhouse-mail.io>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Hi Jane,
+
+Thank you for taking the time to interview for the Software Engineer II, Autonomy role at Kestrel Robotics. We enjoyed getting to know you.
+
+After careful consideration, we have decided to move forward with other candidates whose experience more closely matches our current needs.
+
+We wish you the best in your search.
+
+Kestrel Robotics Recruiting

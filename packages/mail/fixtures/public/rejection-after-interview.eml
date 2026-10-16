@@ -1,0 +1,23 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: Sam Ortiz <sam.ortiz@driftwoodgames.example>
+To: jane.seeker@gmail.com
+Subject: Driftwood Games – Gameplay Engineer
+Date: Fri, 18 Sep 2026 21:30:00 +0000
+Message-ID: <dg-9@driftwoodgames.example>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Hi Jane,
+
+I wanted to personally thank you for meeting with the team over the last few weeks. Everyone appreciated your thoughtful answers in the gameplay systems interview.
+
+Unfortunately, we won't be moving forward with your candidacy for the Gameplay Engineer position. It was a difficult decision with a strong pool of candidates.
+
+I'll keep your details on file for future openings.
+
+Best,
+Sam Ortiz
+Lead Recruiter, Driftwood Games

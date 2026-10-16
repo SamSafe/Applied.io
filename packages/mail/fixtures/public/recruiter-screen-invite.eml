@@ -1,0 +1,21 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: Marcus Bell <marcus.bell@brightlinehealth.example>
+To: jane.seeker@gmail.com
+Subject: Quick call about the Full-Stack Engineer role?
+Date: Fri, 25 Sep 2026 17:30:00 +0000
+Message-ID: <bl-44@brightlinehealth.example>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Hi Jane,
+
+I'm a recruiter at Brightline Health and I came across your application for our Full-Stack Engineer opening. I'd love to set up a 30-minute phone call to tell you more about the team and learn about your background.
+
+Are you free Tuesday or Wednesday afternoon this week? Feel free to grab a slot on my calendar: https://calendly.com/marcus-bell-brightline/30min
+
+Thanks,
+Marcus Bell
+Technical Recruiter, Brightline Health

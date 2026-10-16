@@ -1,0 +1,20 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: Northwind Payments Recruiting <recruiting@northwindpayments.example>
+To: jane.seeker@gmail.com
+Subject: Final round interviews – Senior Software Engineer, Payments
+Date: Fri, 25 Sep 2026 14:57:00 +0000
+Message-ID: <nw-final-3@northwindpayments.example>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Hi Jane,
+
+Congratulations! The hiring team enjoyed your system design interview and would like to invite you to our final round: a half-day onsite with four sessions (coding, architecture, a values conversation, and a chat with the VP of Engineering).
+
+Please reply with three dates over the next two weeks that work for you.
+
+Best regards,
+Northwind Payments Recruiting

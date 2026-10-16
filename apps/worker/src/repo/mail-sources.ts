@@ -54,3 +54,17 @@ export async function rotateForwardingSource(
     .returning();
   return row ?? null;
 }
+
+export async function setVerifiedMailbox(
+  db: Db,
+  userId: string,
+  sourceId: string,
+  mailbox: string | null,
+): Promise<MailSource | null> {
+  const [row] = await db
+    .update(mailSource)
+    .set({ verifiedMailbox: mailbox })
+    .where(and(eq(mailSource.id, sourceId), eq(mailSource.userId, userId)))
+    .returning();
+  return row ?? null;
+}

@@ -1,0 +1,20 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: Cobalt Insurance Careers <cobaltinsurance@talent.icims.com>
+To: jane.seeker@gmail.com
+Subject: Thank you for your interest in Cobalt Insurance
+Date: Mon, 31 Aug 2026 13:05:44 +0000
+Message-ID: <icims-512@talent.icims.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Jane,
+
+Thank you for your interest in the Senior Engineer opportunity at Cobalt Insurance. This message confirms that we have received your application.
+
+If your experience aligns with our needs, a recruiter will contact you.
+
+Sincerely,
+Cobalt Insurance Human Resources

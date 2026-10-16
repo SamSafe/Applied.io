@@ -1,0 +1,22 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: CodeSignal <noreply@codesignal.com>
+To: jane.seeker@gmail.com
+Subject: Tidepool Analytics has invited you to complete a coding assessment
+Date: Mon, 21 Sep 2026 09:00:00 +0000
+Message-ID: <cs-77@codesignal.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Hi Jane,
+
+Tidepool Analytics has invited you to take the General Coding Assessment as part of your application for Data Engineer.
+
+The assessment takes about 70 minutes. Please complete it within 7 days.
+
+Start your assessment: https://app.codesignal.com/invite/ZpXq8Ld0aA3wT7yY2bN5cV6mK9jH1gF4
+
+Good luck!
+The CodeSignal Team, on behalf of Tidepool Analytics

@@ -1,0 +1,20 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: Northwind Payments People Team <people@northwindpayments.example>
+To: jane.seeker@gmail.com
+Subject: Your offer from Northwind Payments
+Date: Sat, 10 Oct 2026 15:42:00 +0000
+Message-ID: <nw-offer-1@northwindpayments.example>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Hi Jane,
+
+We're thrilled to extend you an offer to join Northwind Payments as a Senior Software Engineer, Payments! Your offer letter is attached and outlines compensation, equity, and benefits.
+
+Please review it and let us know if you have any questions. We'd love an answer by October 20.
+
+Welcome (we hope!),
+Northwind Payments People Team

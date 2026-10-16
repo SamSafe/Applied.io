@@ -4,6 +4,8 @@ interface OptionalSecrets {
   GOOGLE_CLIENT_SECRET?: string;
   MICROSOFT_CLIENT_ID?: string;
   MICROSOFT_CLIENT_SECRET?: string;
+  /** Enables classification. Without it, relevant mail waits in "received". */
+  ANTHROPIC_API_KEY?: string;
   /** Comma-separated extra origins Better Auth should trust (local Vite dev server). */
   TRUSTED_ORIGINS?: string;
 }

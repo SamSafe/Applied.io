@@ -1,0 +1,17 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: Mom <mom.seeker@example.test>
+To: jane.seeker@gmail.com
+Subject: Dinner Saturday?
+Date: Thu, 15 Oct 2026 18:30:00 +0000
+Message-ID: <fam-1@example.test>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Hi sweetie,
+
+Are you free for dinner on Saturday? Dad is making his lasagna. Let me know!
+
+Love, Mom

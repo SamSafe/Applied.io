@@ -1,0 +1,21 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: The Career Compass <hello@careercompass.example>
+To: jane.seeker@gmail.com
+Subject: 5 resume mistakes recruiters notice – weekly career tips
+Date: Wed, 14 Oct 2026 07:00:00 +0000
+Message-ID: <cc-nl-41@careercompass.example>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+This week in The Career Compass:
+
+1. Five resume mistakes that recruiters notice in seconds
+2. How to answer "tell me about yourself"
+3. Free webinar: negotiating your salary
+
+Read online: https://careercompass.example/newsletter/41
+
+You're receiving this because you subscribed to The Career Compass. Unsubscribe.

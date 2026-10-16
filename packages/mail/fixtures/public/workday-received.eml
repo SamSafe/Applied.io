@@ -1,0 +1,13 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: Kestrel Robotics <kestrel@myworkday.com>
+To: jane.seeker@gmail.com
+Subject: Thank you for applying – Software Engineer II, Autonomy (R-10422)
+Date: Thu, 03 Sep 2026 18:40:00 +0000
+Message-ID: <wd-88@myworkday.com>
+MIME-Version: 1.0
+Content-Type: text/html; charset=UTF-8
+
+<html><body><p>Dear Jane,</p><p>Thank you for applying for the <b>Software Engineer II, Autonomy</b> position (Job ID: <b>R-10422</b>) at Kestrel Robotics in Pittsburgh, PA.</p><p>We will review your qualifications and contact you if there is a fit.</p><p>Kestrel Robotics Talent Acquisition</p><p style="font-size:10px">This is an automated message. Do not reply to this email.</p></body></html>

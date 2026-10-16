@@ -1,0 +1,191 @@
+{
+  "apple-forward.eml": {
+    "relevant": true,
+    "category": "interview_invite",
+    "interviewKind": "recruiter_screen",
+    "company": "Lumen Civic",
+    "position": "Software Engineer, Civic Tech"
+  },
+  "ashby-interview-invite.eml": {
+    "relevant": true,
+    "category": "interview_invite",
+    "interviewKind": "interview",
+    "company": "Fernway",
+    "position": "Frontend Engineer"
+  },
+  "assessment-codesignal.eml": {
+    "relevant": true,
+    "category": "assessment",
+    "interviewKind": null,
+    "company": "Tidepool Analytics",
+    "position": "Data Engineer"
+  },
+  "final-round-invite.eml": {
+    "relevant": true,
+    "category": "interview_invite",
+    "interviewKind": "final_round",
+    "company": "Northwind Payments",
+    "position": "Senior Software Engineer, Payments"
+  },
+  "gmail-autoforward-greenhouse.eml": {
+    "relevant": true,
+    "category": "application_received",
+    "interviewKind": null,
+    "company": "Acme",
+    "position": "Software Engineer"
+  },
+  "icims-received.eml": {
+    "relevant": true,
+    "category": "application_received",
+    "interviewKind": null,
+    "company": "Cobalt Insurance",
+    "position": "Senior Engineer"
+  },
+  "indeed-apply.eml": {
+    "relevant": true,
+    "category": "application_received",
+    "interviewKind": null,
+    "company": "Tidepool Analytics",
+    "position": "Data Engineer"
+  },
+  "interview-logistics-calendar.eml": {
+    "relevant": true,
+    "category": "interview_logistics",
+    "interviewKind": null,
+    "company": "Juniper Studios",
+    "position": "Product Engineer"
+  },
+  "interview-reminder.eml": {
+    "relevant": true,
+    "category": "interview_logistics",
+    "interviewKind": null,
+    "company": "Lumen Civic",
+    "position": "Software Engineer, Civic Tech"
+  },
+  "lever-received.eml": {
+    "relevant": true,
+    "category": "application_received",
+    "interviewKind": null,
+    "company": "Northwind Payments",
+    "position": "Senior Software Engineer, Payments"
+  },
+  "linkedin-easy-apply.eml": {
+    "relevant": true,
+    "category": "application_received",
+    "interviewKind": null,
+    "company": "Meridian Learning",
+    "position": "Software Engineer, Mobile"
+  },
+  "linkedin-job-alert.eml": {
+    "relevant": false,
+    "category": "other",
+    "interviewKind": null,
+    "company": null,
+    "position": null
+  },
+  "newsletter.eml": {
+    "relevant": false,
+    "category": "other",
+    "interviewKind": null,
+    "company": null,
+    "position": null
+  },
+  "offer.eml": {
+    "relevant": true,
+    "category": "offer",
+    "interviewKind": null,
+    "company": "Northwind Payments",
+    "position": "Senior Software Engineer, Payments"
+  },
+  "outlook-manual-forward.eml": {
+    "relevant": true,
+    "category": "rejection",
+    "interviewKind": null,
+    "company": "Globex",
+    "position": "Data Analyst"
+  },
+  "personal.eml": {
+    "relevant": false,
+    "category": "other",
+    "interviewKind": null,
+    "company": null,
+    "position": null
+  },
+  "prompt-injection.eml": {
+    "relevant": true,
+    "category": "rejection",
+    "interviewKind": null,
+    "company": "Aster & Vale",
+    "position": "Full-Stack Developer"
+  },
+  "recruiter-outreach.eml": {
+    "relevant": true,
+    "category": "recruiter_outreach",
+    "interviewKind": null,
+    "company": "Halcyon Labs",
+    "position": "Staff Platform Engineer"
+  },
+  "recruiter-screen-invite.eml": {
+    "relevant": true,
+    "category": "interview_invite",
+    "interviewKind": "recruiter_screen",
+    "company": "Brightline Health",
+    "position": "Full-Stack Engineer"
+  },
+  "rejection-after-interview.eml": {
+    "relevant": true,
+    "category": "rejection",
+    "interviewKind": null,
+    "company": "Driftwood Games",
+    "position": "Gameplay Engineer"
+  },
+  "rejection-company-level.eml": {
+    "relevant": true,
+    "category": "rejection",
+    "interviewKind": null,
+    "company": "Pinecrest Energy",
+    "position": null
+  },
+  "rejection-greenhouse.eml": {
+    "relevant": true,
+    "category": "rejection",
+    "interviewKind": null,
+    "company": "Kestrel Robotics",
+    "position": "Software Engineer II, Autonomy"
+  },
+  "rfc822-forward.eml": {
+    "relevant": true,
+    "category": "interview_invite",
+    "interviewKind": "interview",
+    "company": "Sable Systems",
+    "position": "Site Reliability Engineer"
+  },
+  "takehome.eml": {
+    "relevant": true,
+    "category": "assessment",
+    "interviewKind": null,
+    "company": "Orbital Freight",
+    "position": "Backend Engineer"
+  },
+  "verbal-offer.eml": {
+    "relevant": true,
+    "category": "offer",
+    "interviewKind": null,
+    "company": "Juniper Studios",
+    "position": "Product Engineer"
+  },
+  "withdrawal-ack.eml": {
+    "relevant": true,
+    "category": "withdrawal_ack",
+    "interviewKind": null,
+    "company": "Quillmark",
+    "position": "Staff Engineer, Developer Tools"
+  },
+  "workday-received.eml": {
+    "relevant": true,
+    "category": "application_received",
+    "interviewKind": null,
+    "company": "Kestrel Robotics",
+    "position": "Software Engineer II, Autonomy"
+  }
+}

@@ -1,0 +1,20 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: Indeed Apply <indeedapply@indeed.com>
+To: jane.seeker@gmail.com
+Subject: Application submitted: Data Engineer at Tidepool Analytics
+Date: Sun, 20 Sep 2026 22:14:00 +0000
+Message-ID: <indeed-31@indeed.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Application submitted
+
+Data Engineer
+Tidepool Analytics - Remote
+
+Your application has been submitted. Good luck!
+
+The following items were sent to Tidepool Analytics: Resume, Contact information.

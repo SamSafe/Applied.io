@@ -1,0 +1,19 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: Quillmark Recruiting <no-reply@quillmark.bamboohr.com>
+To: jane.seeker@gmail.com
+Subject: Application withdrawn
+Date: Sat, 05 Sep 2026 14:00:00 +0000
+Message-ID: <qm-wd-1@quillmark.bamboohr.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Hi Jane,
+
+We've received your request to withdraw your application for Staff Engineer, Developer Tools. Your application has been withdrawn.
+
+Thank you for your interest in Quillmark, and best of luck.
+
+Quillmark Recruiting

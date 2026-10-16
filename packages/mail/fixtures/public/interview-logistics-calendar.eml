@@ -1,0 +1,22 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: Google Calendar <calendar-notification@google.com>
+To: jane.seeker@gmail.com
+Subject: Invitation: Interview: Jane Seeker / Juniper Studios (Product Engineer) @ Thu Oct 22, 2026 10am - 11am (MDT)
+Date: Mon, 12 Oct 2026 19:02:00 +0000
+Message-ID: <cal-1@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+You have been invited to the following event.
+
+Interview: Jane Seeker / Juniper Studios (Product Engineer)
+When: Thursday Oct 22, 2026 10am – 11am Mountain Time - Denver
+Joining info: Join with Google Meet https://meet.google.com/abc-defg-hij
+Organizer: dana.reyes@juniperstudios.example
+
+Going (jane.seeker@gmail.com)? Yes - Maybe - No
+
+Invitation from Google Calendar. You are receiving this email because you are an attendee on the event.

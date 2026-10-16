@@ -74,7 +74,7 @@ export const mailSource = sqliteTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    kind: text("kind", { enum: ["forwarding", "gmail", "graph"] }).notNull(),
+    kind: text("kind", { enum: ["forwarding", "upload", "gmail", "graph"] }).notNull(),
     addressToken: text("address_token").unique(),
     status: text("status", { enum: ["awaiting_first_mail", "active", "revoked"] }).notNull(),
     providerHint: text("provider_hint"),
@@ -147,6 +147,8 @@ export const message = sqliteTable(
     // No FK: event.message_id already points back here, and a cycle buys nothing.
     eventId: text("event_id"),
     review: text("review", { mode: "json" }),
+    /** How the pipeline judged it: wrapper, prefilter verdict, sender check, provider. */
+    diagnostics: text("diagnostics", { mode: "json" }),
     failure: text("failure"),
     purgeAfter: text("purge_after").notNull(),
   },

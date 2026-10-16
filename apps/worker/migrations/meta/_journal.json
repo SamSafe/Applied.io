@@ -22,6 +22,13 @@
       "when": 1792162609361,
       "tag": "0002_settings_timezone_nullable",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1792177909899,
+      "tag": "0003_message_diagnostics",
+      "breakpoints": true
     }
   ]
 }

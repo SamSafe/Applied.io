@@ -1,0 +1,31 @@
+From: Jane Seeker <jane.seeker@gmail.com>
+To: u_test000001@in.example.test
+Subject: Fwd: Interview invitation – Site Reliability Engineer
+Date: Thu, 15 Oct 2026 09:00:00 +0000
+Message-ID: <fwd-att-1@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="outer"
+
+--outer
+Content-Type: text/plain; charset=UTF-8
+
+Forwarding this one, see attached.
+
+--outer
+Content-Type: message/rfc822
+
+From: Sable Systems Talent <talent@sablesystems.example>
+To: jane.seeker@gmail.com
+Subject: Interview invitation – Site Reliability Engineer
+Date: Wed, 14 Oct 2026 17:20:00 +0000
+Message-ID: <ss-int-1@sablesystems.example>
+Content-Type: text/plain; charset=UTF-8
+
+Hi Jane,
+
+We'd like to invite you to a technical interview for the Site Reliability Engineer position. The interview is 45 minutes with two members of our infrastructure team.
+
+Please share your availability for next week.
+
+Sable Systems Talent
+--outer--

@@ -13,6 +13,7 @@
     "db:migrate:local": "wrangler d1 migrations apply DB --local"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "0.135.0",
     "@apptracker/core": "workspace:*",
     "@apptracker/mail": "workspace:*",
     "better-auth": "1.7.10",

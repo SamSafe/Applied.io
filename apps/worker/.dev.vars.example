@@ -1,5 +1,9 @@
 # Copy to .dev.vars for `wrangler dev`. Never commit .dev.vars.
 BETTER_AUTH_SECRET=replace-with-32+-random-characters
+
+# Optional: classify forwarded emails with Claude (otherwise relevant mail waits unclassified).
+# ANTHROPIC_API_KEY=
+
 # Optional: enable social sign-in locally.
 # GOOGLE_CLIENT_ID=
 # GOOGLE_CLIENT_SECRET=

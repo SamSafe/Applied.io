@@ -1,0 +1,20 @@
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+Authentication-Results: mx.example.test; dkim=pass header.d=gmail.com; arc=pass (i=1)
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=AAAA
+From: Orbital Freight Hiring <hiring@orbitalfreight.example>
+To: jane.seeker@gmail.com
+Subject: Take-home exercise – Backend Engineer
+Date: Thu, 08 Oct 2026 20:10:00 +0000
+Message-ID: <of-th-1@orbitalfreight.example>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Hi Jane,
+
+Thanks for applying to Orbital Freight. As the next step for the Backend Engineer role, we'd like you to complete a short take-home exercise: build a small shipment-routing API. We expect it to take 3-4 hours, and you have one week.
+
+The brief and starter repository are attached to this message. Reply with a link to your solution when you're done.
+
+Cheers,
+Orbital Freight Engineering

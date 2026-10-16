@@ -16,6 +16,8 @@ export interface ParsedEmail {
   text: string | null;
   html: string | null;
   attachments: { filename: string | null; mimeType: string; size: number }[];
+  /** Raw bytes of the first attached message (message/rfc822), for unwrapping forwards. */
+  forwardedRaw: ArrayBuffer | Uint8Array | string | null;
 }
 
 export type RawEmail = ArrayBuffer | Uint8Array | string;
@@ -31,6 +33,7 @@ export async function parseEmail(raw: RawEmail): Promise<ParsedEmail> {
     headers: email.headers.map((h) => ({ key: h.key, value: h.value })),
     text: email.text ?? null,
     html: email.html ?? null,
+    forwardedRaw: email.attachments.find((a) => a.mimeType === "message/rfc822")?.content ?? null,
     attachments: email.attachments.map((a) => ({
       filename: a.filename,
       mimeType: a.mimeType,

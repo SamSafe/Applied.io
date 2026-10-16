@@ -19,5 +19,15 @@ export async function findActiveForwardingSource(db: Db, addressToken: string) {
 
 export async function getMessageForProcessing(db: Db, messageId: string) {
   const [row] = await db.select().from(message).where(eq(message.id, messageId)).limit(1);
-  return row ?? null;
+  if (!row) return null;
+  const [source] = await db
+    .select({
+      kind: mailSource.kind,
+      verifiedMailbox: mailSource.verifiedMailbox,
+      providerHint: mailSource.providerHint,
+    })
+    .from(mailSource)
+    .where(and(eq(mailSource.id, row.sourceId), eq(mailSource.userId, row.userId)))
+    .limit(1);
+  return source ? { message: row, source } : null;
 }
