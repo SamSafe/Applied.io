@@ -1,36 +1,40 @@
-# Applied.io
+# Applied.io (working name)
 
-A local-first job-application tracker that turns your application history into the
-shareable Sankey graphic people post on Reddit — automatically.
+**Apply anywhere. Your tracker updates itself.**
 
-Two frontends over one shared core:
-- **`applied` CLI** — fast capture, scriptable, lives in your terminal workflow.
-- **Desktop app** (Avalonia) — pipeline board + visualize/share.
+A job-application tracker that fills itself in from your email. The "thanks for
+applying" email creates the application, interview and rejection emails move it through
+the pipeline, silence marks it ghosted, and the Sankey chart people post on Reddit comes
+for free.
 
-Both operate on the **same local SQLite database**, so capture in the terminal and review
-in the GUI.
+Works with any email provider from day one: you add a forwarding rule in Gmail, Outlook,
+iCloud and so on, and job-related mail goes to your private Applied address. Direct
+Gmail/Outlook connections come later.
 
-## Why it's different
-Existing trackers treat the chart as an afterthought. Here the **auto-generated Sankey is
-the front door**: every shared graphic is a "made with Applied.io" billboard, and the
-share loop feeds anonymized community benchmarks no competitor can match without scale.
-
-## The one idea to understand first
-**Status is a history, not a field.** Applications store an append-only log of stage
-transitions; current status, ghost detection, time-to-response, and the Sankey are all
-*derived* from it. Read [`docs/DATA_MODEL.md`](docs/DATA_MODEL.md) before writing code.
+## The ideas to understand first
+1. **Status is a history, not a field.** Each application stores an append-only log of
+   events. Current status, ghosting, stats and the Sankey are all *derived* from it.
+   See [docs/DATA_MODEL.md](docs/DATA_MODEL.md).
+2. **Never silently wrong.** Every email-driven change is either high-confidence and
+   undoable, or it waits in a review queue. See [docs/EMAIL_PIPELINE.md](docs/EMAIL_PIPELINE.md).
+3. **Minimum data.** We only see mail the user's own filter forwards, and raw email is
+   deleted after 30 days. See [docs/SECURITY_PRIVACY.md](docs/SECURITY_PRIVACY.md).
 
 ## Documentation
 | Doc | What it covers |
 |-----|----------------|
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Solution layout, dependency rules, tech choices, shared-db paths |
-| [docs/DATA_MODEL.md](docs/DATA_MODEL.md) | Entities, enums, the event-log design, Sankey derivation |
-| [docs/CLI.md](docs/CLI.md) | Full `applied` command surface and conventions |
-| [docs/ROADMAP.md](docs/ROADMAP.md) | Ordered build milestones; MVP = M0–M3 via CLI |
+| [docs/PRODUCT.md](docs/PRODUCT.md) | Problem, users, competition, non-goals, whether it's worth doing |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System diagram, repo layout, stack and rationale, API surface |
+| [docs/DATA_MODEL.md](docs/DATA_MODEL.md) | Tables, event log, transition rules, derivations, Sankey algorithm |
+| [docs/EMAIL_PIPELINE.md](docs/EMAIL_PIPELINE.md) | Provider setup, parsing, classification, matching, review queue, evals |
+| [docs/SECURITY_PRIVACY.md](docs/SECURITY_PRIVACY.md) | What we store, threats, retention, compliance checklist |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | Milestones M0–M8 with tasks, estimates, done-when, risks |
 
 ## Stack
-.NET 8 · C# · EF Core + SQLite · System.CommandLine + Spectre.Console (CLI) · Avalonia (GUI)
+TypeScript · Cloudflare Workers (Email Routing, Queues, D1, R2) · Hono · Drizzle ·
+Better Auth · React + Vite · Anthropic API (email classification)
 
 ## Status
-Design phase. The original Java/Maven prototype has been removed; implementation begins
-with the C# `Applied.Core` per [docs/ROADMAP.md](docs/ROADMAP.md) (milestone M0).
+Design complete, no code yet. Implementation starts at
+[ROADMAP.md → M0](docs/ROADMAP.md#m0--foundations--spikes-3-days). The earlier .NET
+CLI/desktop design and the Java prototype are in git history.

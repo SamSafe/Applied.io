@@ -1,85 +1,151 @@
-# Applied.io — Architecture
+# Architecture
 
-A local-first job-application tracker with two frontends (CLI + desktop GUI) over a
-single shared core. The Sankey share-graphic is the product's growth engine, not an
-afterthought.
+## Principles
 
-## Guiding principles
+1. **Zero-entry by default.** Email is the main input. Manual entry is for gaps and
+   corrections.
+2. **History, not state.** Applications store an append-only event log, and everything
+   else is derived from it (see [DATA_MODEL.md](DATA_MODEL.md)).
+3. **Never silently wrong.** Automation only acts when the sender is verified, the
+   classifier is highly certain, and exactly one application matches. Everything else
+   goes to review, and every automated change can be undone.
+4. **Minimum data.** Only mail the user's filter forwards reaches us. Raw mail is
+   deleted on a timer (see [SECURITY_PRIVACY.md](SECURITY_PRIVACY.md)).
+5. **One brain.** Domain logic lives in a pure package with no I/O. The Worker and the
+   web app are thin edges around it.
 
-1. **Local-first.** All data lives on the user's machine in a single SQLite file. No
-   account required to use the core product. (Sharing/sync is an optional later layer.)
-2. **One brain, many faces.** All domain logic lives in `Applied.Core`. The CLI and the
-   desktop app are thin presentation layers that call into it. Any feature written once
-   (ghost detection, Sankey, analytics, future email-parsing) is available to both.
-3. **History, not state.** Application status is never a mutable field. It is derived
-   from an append-only log of stage transitions. See `DATA_MODEL.md`.
-4. **Cross-platform.** Core + Data + CLI run anywhere .NET runs (incl. WSL/Linux). The
-   GUI uses Avalonia (not WPF) so the desktop app is cross-platform too.
-
-## Solution layout
+## System overview
 
 ```
-Applied.sln
-├── Applied.Core/       Domain model + business logic. NO UI deps, NO direct DB deps.
-│     ├── Model/          Application, StageEvent, Stage, Outcome
-│     ├── Ghosting/       GhostDetector (derives "ghosted" from event history)
-│     ├── Sankey/         SankeyBuilder (event log -> flow counts -> SankeyMATIC text)
-│     └── Analytics/      AnalyticsService (response rate, time-to-response, funnel)
-│
-├── Applied.Data/       Persistence. EF Core + SQLite.
-│     ├── AppliedDbContext
-│     ├── Migrations/
-│     └── Repositories/   IApplicationRepository + EF implementation
-│
-├── Applied.Cli/        Console app. System.CommandLine + Spectre.Console.
-│
-└── Applied.Desktop/    Avalonia app (MVVM).
+ Job seeker's mailbox (Gmail · Outlook · iCloud · …)
+        │  provider rule: forward job-related mail
+        ▼
+ Cloudflare Email Routing   (catch-all  *@in.<domain>)
+        │
+        ▼
+ ┌─────────────────────────── Worker (one deployment) ───────────────────────────┐
+ │ email()      receive → raw MIME to R2 → messages row → enqueue                 │
+ │ queue()      parse/unwrap → verify → prefilter → classify → match → write      │──► Anthropic API
+ │ fetch()      Hono REST API  +  serves the SPA's static assets                  │
+ │ scheduled()  purge expired raw mail · weekly digest                            │
+ └──────────────────┬──────────────────────────────────┬─────────────────────────┘
+                    ▼                                  ▼
+              D1 (SQLite)                        R2 (raw .eml, expires)
+   users · applications · events
+   messages · mail_sources · settings
+                    ▲
+                    │  JSON over HTTPS (session cookie)
+             React SPA (browser)
 ```
 
-## Dependency rules (enforce these)
+The email path is asynchronous. `email()` does the minimum work (store, record,
+enqueue) and returns, which keeps it within Workers CPU limits on large messages. The
+queue consumer does the slow parts with retries and a dead-letter queue.
+
+## Repo layout
 
 ```
-Applied.Cli ─────┐
-                 ├──► Applied.Core ◄── Applied.Data
-Applied.Desktop ─┘                         │
-                                           └──► (Core defines interfaces,
-                                                 Data implements them)
+apptracker/
+├── packages/
+│   ├── core/      Pure domain. No I/O and no runtime dependencies. Event types,
+│   │              transition rules, derivations (status, ghosting), analytics,
+│   │              Sankey builder, matcher scoring.
+│   └── mail/      Email understanding. MIME → normalized message, forward unwrapping,
+│                  sender verification, prefilter rules, ATS sender list, classifier
+│                  prompt + zod schema, fixtures + eval runner. Depends on core.
+├── apps/
+│   ├── worker/    Cloudflare Worker: Hono API, email/queue/cron handlers, Drizzle
+│   │              schema + migrations, auth, user-scoped repositories.
+│   │              Depends on core + mail.
+│   └── web/       React + Vite SPA. Depends on core (shared types only).
+├── docs/
+└── pnpm-workspace.yaml
 ```
 
-- `Core` depends on **nothing** in this solution. It is pure domain + logic, fully
-  unit-testable with no database.
-- `Core` defines persistence **interfaces** (e.g. `IApplicationRepository`). `Data`
-  implements them against EF Core. This keeps `Core` ignorant of SQLite.
-- `Cli` and `Desktop` depend on `Core` (for logic) and `Data` (to wire up the concrete
-  repository at startup via DI). They never depend on each other.
+### Dependency rules (enforce in CI)
 
-## Shared database
+```
+apps/web ─────────────► packages/core ◄──── packages/mail
+                              ▲                    ▲
+apps/worker ──────────────────┴────────────────────┘
+```
 
-Both frontends open the **same** SQLite file so they operate on one dataset:
+- `core` imports nothing from the workspace and has no runtime dependencies. It is fully
+  unit-testable.
+- `mail` has the prompt, schema and parsing. It takes an Anthropic client as a parameter
+  instead of creating one, so evals can run it outside the Worker.
+- `web` talks to `worker` only over HTTP and never imports `mail` or Worker internals.
+- All database access goes through `apps/worker/src/repo/*`. Every function there takes
+  `userId` as a required argument (see the scoping rule in
+  [SECURITY_PRIVACY.md](SECURITY_PRIVACY.md)).
 
-| OS            | Path                                            |
-|---------------|-------------------------------------------------|
-| Linux / WSL   | `~/.applied/applied.db`                          |
-| macOS         | `~/Library/Application Support/Applied/applied.db` |
-| Windows       | `%APPDATA%\Applied\applied.db`                   |
+## Stack
 
-Resolve via a single helper in `Applied.Data` (`AppliedPaths.DatabaseFile`) so both
-frontends agree. Allow override with the `APPLIED_DB` environment variable (useful for
-tests and for keeping a separate "demo" dataset).
+| Concern | Choice | Why |
+|---|---|---|
+| Language | TypeScript everywhere | One language across web, API and domain. First-class SDKs for Anthropic, Google and Microsoft. Allows a browser extension later. |
+| Runtime/hosting | Cloudflare Workers + static assets | **Receiving email is the core of the product, and Cloudflare is the only mainstream platform where it is first-class and free** (Email Routing → Email Worker). Queues, cron, the database and object storage live in the same place and on one bill. Workers Paid costs $5/month. |
+| Inbound email | Email Routing catch-all → Email Worker | A single catch-all rule covers every user address, which avoids Email Routing's 200-address limit. Max message size is 25 MiB. |
+| MIME parsing | `postal-mime` | Works in the Workers runtime. |
+| Database | D1 (SQLite) + Drizzle ORM | Each user's data is small (hundreds of applications). Relational data and the event log fit SQLite well. Typed migrations. |
+| Raw mail storage | R2 with lifecycle expiry | Keeps large blobs out of D1. Expiry enforces the retention policy. |
+| Async work | Cloudflare Queues | Retries, batching, dead-letter queue. |
+| API | Hono | Small, typed, built for Workers. |
+| Auth | Better Auth | Magic link, Google and Microsoft sign-in (passkeys later). Runs on Workers with D1. *(Confirmed in spike S4.)* |
+| Transactional email | Cloudflare Email Service (fallback: Resend) | Magic links and digests. Same platform. |
+| LLM | Anthropic API via `@anthropic-ai/sdk` | Structured outputs with zod (`messages.parse` + `zodOutputFormat`). Model choice in [EMAIL_PIPELINE.md](EMAIL_PIPELINE.md#model-and-cost). |
+| Frontend | React + Vite, TanStack Query, Tailwind | Mainstream and simple. A single-page app with no server rendering is enough for v1. |
+| Charts | `d3-sankey` → SVG → PNG export | Same node and link data as the SankeyMATIC text export. |
+| Tests | Vitest (+ Workers pool), `.eml` fixture corpus | Core logic is pure, so most tests are plain unit tests. |
+| Tooling | pnpm workspaces, Biome, GitHub Actions, Wrangler | |
 
-**Workflow payoff:** capture a job from the terminal (`applied add ...`) and it appears
-in the desktop pipeline view. CLI = fast capture; GUI = review + visualize.
+### Considered and rejected
+- **.NET + CLI + Avalonia (the previous design):** a local desktop app can't receive
+  email, and a CLI doesn't reach job seekers. Nothing in a web-first product calls for
+  .NET.
+- **Next.js on Vercel + Postgres:** perfectly viable, but receiving email would need a
+  third vendor (Postmark, SES, Mailgun) plus glue code. Revisit if D1 limits bite (10 GB
+  per database; raw mail lives in R2, so this is far away).
+- **Direct Gmail/Outlook API access in v1:** best user experience, but Gmail read access
+  is a "restricted scope." It requires a yearly third-party security assessment (CASA)
+  once you have more than 100 users. Planned for M7 (see [EMAIL_PIPELINE.md](EMAIL_PIPELINE.md#ingestion-paths)).
 
-## Tech choices (rationale)
+## API surface (v1)
 
-| Concern        | Choice                | Why                                              |
-|----------------|-----------------------|--------------------------------------------------|
-| Language       | C# / .NET 8           | Java-adjacent (easy switch), great for desktop+CLI |
-| GUI            | Avalonia UI (MVVM)    | WPF-like XAML, but cross-platform (runs on WSL)  |
-| Persistence    | EF Core + SQLite      | Single-file, zero-config, local-first            |
-| CLI parsing    | System.CommandLine    | Subcommands, `--help`, completions for free      |
-| CLI output     | Spectre.Console       | Tables, color, progress — nice scriptable UX     |
-| Sankey render  | SankeyMATIC text first; image render later | Text composes in pipes; PNG is convenience layer |
+All routes are under `/api` and require a session unless marked otherwise.
+Responses include derived state computed by `core`, so the client never re-derives it.
 
-See `DATA_MODEL.md` for entities and `CLI.md` for the command surface.
-See `ROADMAP.md` for build order.
+| Method & path | Purpose |
+|---|---|
+| `GET /applications?status=&stage=&q=` | List with derived status, stage, age and ghost flag |
+| `POST /applications` | Manual create (also appends an `applied` event) |
+| `GET /applications/:id` | Static facts + full event timeline with evidence |
+| `PATCH /applications/:id` | Edit static facts (company, position, url…) |
+| `DELETE /applications/:id` | Hard delete, e.g. a duplicate created from a bad email |
+| `POST /applications/:id/events` | Append `advanced` / `closed` / `noted` (validated by `core`) |
+| `POST /events/:id/void` | Undo: appends a `voided` event |
+| `GET /review` | Messages with status `needs_review`, with suggested actions |
+| `POST /review/:messageId` | Resolve: `confirm` / `assign {applicationId}` / `create` / `ignore` |
+| `GET /stats?since=` | Funnel, rates, median time to first response |
+| `GET /sankey?since=` | `{ nodes, links, sankeymatic }` |
+| `GET /mail-sources` · `POST /mail-sources/forwarding` · `POST /mail-sources/:id/rotate` | Forwarding address lifecycle and status |
+| `POST /messages/upload` | Upload `.eml` files (backfill, Yahoo free accounts, testing) |
+| `GET /settings` · `PATCH /settings` | Ghost threshold, time zone, retention, digest |
+| `GET /export` · `DELETE /account` | Data export (JSON + CSV) and account deletion |
+
+## Environments
+
+| Env | How |
+|---|---|
+| Local | `wrangler dev` with local D1/R2/Queues. `pnpm mail:send fixtures/x.eml` posts a fixture through the same code path as `email()`. |
+| Staging | Separate Worker, D1 and R2, on the `in-staging.<domain>` subdomain. Used for the author's real forwarding during development. |
+| Production | Created at M6. |
+
+## Running costs (early)
+
+| Item | Cost |
+|---|---|
+| Workers Paid (includes D1/R2/Queues allowances at small scale) | $5 / month |
+| Domain | ~$10–15 / year |
+| LLM classification | Per relevant email, set by the model choice. See [EMAIL_PIPELINE.md](EMAIL_PIPELINE.md#model-and-cost). |
+| Later: CASA assessment for the Gmail connector | Reported ~$540–1k / year at the cheap end |
