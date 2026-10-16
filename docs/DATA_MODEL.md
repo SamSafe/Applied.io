@@ -132,7 +132,7 @@ Rules are evaluated against the application's live (non-voided) events.
 | `closed(rejected \| withdrawn)` | Application is open | Same as above |
 | `closed(accepted \| declined)` | Open **and** `offer` has been reached | Manual → error; email → review |
 | `noted` | Always | — |
-| `voided(id)` | Target exists, isn't `applied`, and isn't already voided | Error. To remove `applied`, delete the application. |
+| `voided(id)` | Target exists, isn't `applied` or itself a `voided` event, and isn't already voided | Error. To remove `applied`, delete the application. |
 
 Voiding a `closed` event reopens the application. Advancing to a stage at or below the
 current maximum is allowed (repeat interview rounds, events logged out of order). It

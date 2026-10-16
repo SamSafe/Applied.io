@@ -137,7 +137,7 @@ Responses include derived state computed by `core`, so the client never re-deriv
 
 | Env | How |
 |---|---|
-| Local | `wrangler dev` with local D1/R2/Queues. `pnpm mail:send fixtures/x.eml` posts a fixture through the same code path as `email()`. |
+| Local | `wrangler dev` with local D1/R2/Queues. `pnpm mail:send <file.eml> <address>` delivers a file through the same code path as `email()`. |
 | Staging | Separate Worker, D1 and R2, on the `in-staging.<domain>` subdomain. Used for the author's real forwarding during development. |
 | Production | Created at M6. |
 

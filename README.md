@@ -34,7 +34,21 @@ Gmail/Outlook connections come later.
 TypeScript · Cloudflare Workers (Email Routing, Queues, D1, R2) · Hono · Drizzle ·
 Better Auth · React + Vite · Anthropic API (email classification)
 
+## Development
+Requires Node 22 and pnpm (`corepack enable`).
+```sh
+pnpm install
+cp apps/worker/.dev.vars.example apps/worker/.dev.vars    # then set BETTER_AUTH_SECRET
+pnpm --filter @apptracker/worker db:migrate:local
+pnpm --filter @apptracker/web build                       # the Worker serves the SPA build
+pnpm --filter @apptracker/worker dev                      # http://localhost:8787
+pnpm mail:send packages/mail/fixtures/public/gmail-autoforward-greenhouse.eml <address>
+pnpm run check                                            # lint, dependency rules, types, tests
+```
+Locally, magic-link sign-in URLs are printed to the `wrangler dev` console. Staging setup
+is in [docs/spikes/SETUP.md](docs/spikes/SETUP.md).
+
 ## Status
-Design complete, no code yet. Implementation starts at
-[ROADMAP.md → M0](docs/ROADMAP.md#m0--foundations--spikes-3-days). The earlier .NET
-CLI/desktop design and the Java prototype are in git history.
+M0 is built except the spikes that need a real domain (S1–S3). M1 (core domain) is done.
+See [ROADMAP.md](docs/ROADMAP.md) and [docs/spikes/](docs/spikes/README.md). The earlier
+.NET CLI/desktop design and the Java prototype are in git history.

@@ -26,16 +26,18 @@ Retire the riskiest assumptions first. Each spike produces a short note in `docs
 - [ ] **S3 – Outlook rules.** Check whether Outlook.com allows Redirect/Forward to an
       external address, whether there's throttling, and the format. Check a Microsoft
       365 tenant if one is available.
-- [ ] **S4 – Auth.** Better Auth on Workers + D1: magic link + Google sign-in, hello world.
+- [x] **S4 – Auth.** Better Auth on Workers + D1: magic link verified; Google/Microsoft wired,
+      untested until OAuth client IDs exist (see [spikes/README.md](spikes/README.md)).
 
 Scaffold:
-- [ ] pnpm workspace: `packages/core`, `packages/mail`, `apps/worker`, `apps/web`. TS
+- [x] pnpm workspace: `packages/core`, `packages/mail`, `apps/worker`, `apps/web`. TS
       strict, Biome, Vitest.
-- [ ] `wrangler.jsonc` with D1, R2 and Queue bindings, plus staging and production envs.
-- [ ] Drizzle schema for every table in [DATA_MODEL.md](DATA_MODEL.md) + first migration.
-- [ ] Replace `.gitignore` with Node/Wrangler rules (`node_modules/`, `dist/`,
+- [x] `wrangler.jsonc` with D1, R2 and Queue bindings, plus a staging env (production
+      comes at M6).
+- [x] Drizzle schema for every table in [DATA_MODEL.md](DATA_MODEL.md) + first migration.
+- [x] Replace `.gitignore` with Node/Wrangler rules (`node_modules/`, `dist/`,
       `.wrangler/`, `.dev.vars`, `packages/mail/fixtures/private/`).
-- [ ] GitHub Actions: typecheck, lint, test, dependency-rule check.
+- [x] GitHub Actions: typecheck, lint, test, dependency-rule check.
 
 **Done when:** a job email forwarded from your real Gmail lands as a row in staging D1,
 and the S1–S4 notes answer every **Spike** row in
@@ -44,17 +46,18 @@ and the S1–S4 notes answer every **Spike** row in
 ## M1 — Core domain (~3 days)
 
 Pure TypeScript in `packages/core`, no I/O.
-- [ ] Types: `Stage`, `Outcome`, the `Event` union, `Application`.
-- [ ] `validate(app, proposedEvent)` → ok or a typed violation.
-- [ ] `derive(app, now, settings)` → live events, `appliedAt`, `maxStage`, status,
+- [x] Types: `Stage`, `Outcome`, the `Event` union, `Application`.
+- [x] `validate(events, proposedEvent)` → ok or a typed violation.
+- [x] `derive(app, now, settings)` → live events, `appliedAt`, `maxStage`, status,
       `lastActivityAt`, `isStale`, time to first response.
-- [ ] `analytics(apps, range)` → funnel, rates, median time to first response.
-- [ ] `sankey(apps, now, settings)` → path builder (monotonic rule, terminal nodes),
+- [x] `analytics(apps, now, settings, range)` → funnel, rates, median time to first response.
+- [x] `sankey(apps, now, settings)` → path builder (monotonic rule, terminal nodes),
       edge counts, SankeyMATIC text, `{nodes, links}`.
-- [ ] `match(candidates, extracted)` → scored candidates + decision. Includes
-      company/title normalizers.
-- [ ] Table-driven tests: the DATA_MODEL worked example verbatim, voids, reopen after a
-      voided close, interview rounds, out-of-order events, ghost boundaries, time zones.
+- [x] `match(apps, extracted, intent)` → decision, plus `findRepeatedEvent` for dedupe.
+      Includes company/title normalizers.
+- [x] Table-driven tests: the DATA_MODEL worked example verbatim, voids, reopen after a
+      voided close, interview rounds, out-of-order events, ghost boundaries. (Core works on
+      UTC instants; time zones only affect display, in M2.)
 
 **Done when:** every example in DATA_MODEL.md and every row of the EMAIL_PIPELINE
 matching table is a passing test.
@@ -74,10 +77,11 @@ matching table is a passing test.
 
 ## M3 — Email: receive → understand (~5 days)
 
-- [ ] Forwarding address: issue and rotate, `mail_source` status.
+- [x] Forwarding address: issue and rotate, `mail_source` status (API only; UI in this
+      milestone).
 - [ ] Onboarding screen: Gmail steps, filter recipe with a copy button, live "waiting for
       first email…" check, Gmail confirmation code display.
-- [ ] `email()`: reject unknown addresses, size cap, drop duplicates by Message-ID,
+- [x] `email()`: reject unknown addresses, size cap, drop duplicates by Message-ID,
       store to R2, insert row, enqueue.
 - [ ] Parser: `postal-mime`, forward unwrapping (Gmail, Outlook, rfc822 attachment),
       HTML → text, quote/signature stripping.

@@ -149,11 +149,12 @@ similarity (token overlap on `position_key`), open versus closed, recency.
 | Situation | Action |
 |---|---|
 | `application_received`, no matching open application | Create the application + `applied` |
-| `application_received` that duplicates an open application (title similarity ≥ 0.8, within 30 days) | Attach as evidence, no new event |
-| Status email, exactly one open application at the company | Match. The position may be missing, since company-level rejections often omit it. |
+| `application_received` that duplicates an open application (title similarity ≥ 0.8, within 30 days, or the same ATS job ref) | Attach as evidence, no new event |
+| `application_received` with no position, and the company has an open application from the last 30 days | Review: a repeat confirmation and a second application look the same |
+| Status email, exactly one open application at the company | Match. The position may be missing, since company-level rejections often omit it. If the email names a clearly different title (similarity < 0.25), send to review instead. |
 | Status email, several open applications | Best title similarity ≥ 0.6 **and** ≥ 0.2 ahead of the next → match; otherwise review "which application?" |
 | Status email, no application found | Review: "Create an application from this email?" |
-| Email about a **closed** application | Review (possible re-engagement) |
+| Email about a **closed** application (the only matches are closed, or a closed one beats every open one by ≥ 0.2) | Review (possible re-engagement) |
 | Same stage as an event within the last 14 days | Attach as evidence, no new event (invite, confirmation and reminder all describe one step) |
 
 ## Decide: the auto-apply gate
