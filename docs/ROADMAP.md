@@ -64,10 +64,12 @@ matching table is a passing test.
 
 ## M2 — Manual tracker (~4 days)
 
-- [ ] Auth: magic link + Google + Microsoft sign-in. Session middleware.
-- [ ] User-scoped repositories + cross-user access tests.
-- [ ] API: applications, events, void, settings (see
-      [ARCHITECTURE.md](ARCHITECTURE.md#api-surface-v1)).
+- [ ] Auth: magic link + Google + Microsoft sign-in. Session middleware. *(Session middleware
+      and magic link done; still to do: email delivery for magic links, OAuth client IDs.)*
+- [x] User-scoped repositories + cross-user access tests.
+- [x] API: applications, events, void, settings (see
+      [ARCHITECTURE.md](ARCHITECTURE.md#api-surface-v1)). Stats and Sankey endpoints from
+      M5 are done too, since core already computes them.
 - [ ] Web: sign-in, application list (stage, status, age, ghost flag, filters, search),
       detail timeline with actions (advance / reject / withdraw / accept / decline /
       note / undo), add form.

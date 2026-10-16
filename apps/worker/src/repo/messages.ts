@@ -1,20 +1,9 @@
 import { and, desc, eq } from "drizzle-orm";
 import type { Db } from "../db/client";
-import { mailSource, message, settings } from "../db/schema";
+import { mailSource, message } from "../db/schema";
 
 export type Message = typeof message.$inferSelect;
 export type NewMessage = typeof message.$inferInsert;
-
-const DEFAULT_RAW_RETENTION_DAYS = 30;
-
-export async function rawRetentionDays(db: Db, userId: string): Promise<number> {
-  const [row] = await db
-    .select({ days: settings.rawRetentionDays })
-    .from(settings)
-    .where(eq(settings.userId, userId))
-    .limit(1);
-  return row?.days ?? DEFAULT_RAW_RETENTION_DAYS;
-}
 
 /**
  * Records a newly received email and marks its source as active, in one batch.

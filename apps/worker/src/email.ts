@@ -2,7 +2,8 @@ import { decodeHeader, domainOf, parseAddress, toIso } from "@apptracker/mail";
 import { getDb } from "./db/client";
 import { newId } from "./ids";
 import type { MailQueueMessage } from "./queue";
-import { insertReceivedMessage, rawRetentionDays } from "./repo/messages";
+import { insertReceivedMessage } from "./repo/messages";
+import { getSettings } from "./repo/settings";
 import { findActiveForwardingSource } from "./repo/system";
 
 /** We cap well below Email Routing's 25 MiB; job emails are small and big ones are noise. */
@@ -29,7 +30,7 @@ export async function handleEmail(msg: ForwardableEmailMessage, env: Env): Promi
   });
 
   const from = parseAddress(msg.headers.get("from"));
-  const retentionDays = await rawRetentionDays(db, source.userId);
+  const { rawRetentionDays: retentionDays } = await getSettings(db, source.userId);
   const isNew = await insertReceivedMessage(db, {
     id,
     userId: source.userId,
