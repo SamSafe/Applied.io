@@ -13,7 +13,8 @@
     "lint": "biome check .",
     "format": "biome check --write .",
     "check:deps": "node scripts/check-deps.mjs",
-    "ci": "pnpm lint && pnpm check:deps && pnpm typecheck && pnpm test"
+    "mail:send": "node scripts/send-mail.mjs",
+    "check": "pnpm lint && pnpm check:deps && pnpm typecheck && pnpm test"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

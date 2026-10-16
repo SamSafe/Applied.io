@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Node types are for tests that read fixtures; src runs in the Workers runtime.
+    "types": ["node"]
+  },
+  "include": ["src"]
+}

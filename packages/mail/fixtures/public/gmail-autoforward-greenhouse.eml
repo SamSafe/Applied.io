@@ -1,0 +1,28 @@
+Delivered-To: u_test000001@in.example.test
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com [209.85.220.41])
+        by mx.example.test with ESMTPS id abc123
+        for <u_test000001@in.example.test>; Mon, 12 Oct 2026 14:03:11 -0700 (PDT)
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@us.greenhouse-mail.io;
+       spf=pass smtp.mailfrom=bounces@us.greenhouse-mail.io
+Authentication-Results: mx.example.test;
+       dkim=pass header.d=gmail.com;
+       arc=pass (i=1)
+X-Forwarded-To: u_test000001@in.example.test
+X-Forwarded-For: jane.seeker@gmail.com u_test000001@in.example.test
+DKIM-Signature: v=1; a=rsa-sha256; d=us.greenhouse-mail.io; s=s1; b=AAAA
+DKIM-Signature: v=1; a=rsa-sha256; d=gmail.com; s=arc-20240605; b=BBBB
+From: Acme Recruiting <no-reply@us.greenhouse-mail.io>
+To: jane.seeker@gmail.com
+Subject: =?UTF-8?Q?Thank_you_for_applying_to_Acme_=E2=80=94_Software_Engineer?=
+Date: Mon, 12 Oct 2026 21:02:58 +0000
+Message-ID: <greenhouse.1234567@us.greenhouse-mail.io>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Hi Jane,
+
+Thanks for applying to the Software Engineer role at Acme. Our team will review
+your application and be in touch if your experience is a good match.
+
+Acme Recruiting

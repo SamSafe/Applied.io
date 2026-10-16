@@ -1,0 +1,76 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "apptracker",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+
+  // The SPA is served from the same Worker; /api/* always reaches the Worker first.
+  "assets": {
+    "directory": "../web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+
+  // Local development (wrangler dev). IDs here are placeholders; local mode doesn't use them.
+  "vars": {
+    "ENVIRONMENT": "development",
+    "INBOUND_DOMAIN": "in.localhost",
+    "BETTER_AUTH_URL": "http://localhost:8787"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "apptracker",
+      "database_id": "local",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [{ "binding": "RAW_MAIL", "bucket_name": "apptracker-raw-mail" }],
+  "queues": {
+    "producers": [{ "binding": "MAIL_QUEUE", "queue": "apptracker-mail" }],
+    "consumers": [
+      {
+        "queue": "apptracker-mail",
+        "max_batch_size": 10,
+        "max_retries": 5,
+        "dead_letter_queue": "apptracker-mail-dlq"
+      }
+    ]
+  },
+
+  "env": {
+    // Fill in IDs after creating the resources (see docs/spikes/SETUP.md).
+    "staging": {
+      "name": "apptracker-staging",
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "INBOUND_DOMAIN": "in-staging.REPLACE_WITH_DOMAIN",
+        "BETTER_AUTH_URL": "https://apptracker-staging.REPLACE_WITH_SUBDOMAIN.workers.dev",
+        "SPIKE_LOG_HEADERS": "true"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "apptracker-staging",
+          "database_id": "REPLACE_WITH_D1_ID",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "r2_buckets": [{ "binding": "RAW_MAIL", "bucket_name": "apptracker-staging-raw-mail" }],
+      "queues": {
+        "producers": [{ "binding": "MAIL_QUEUE", "queue": "apptracker-staging-mail" }],
+        "consumers": [
+          {
+            "queue": "apptracker-staging-mail",
+            "max_batch_size": 10,
+            "max_retries": 5,
+            "dead_letter_queue": "apptracker-staging-mail-dlq"
+          }
+        ]
+      }
+    }
+  }
+}

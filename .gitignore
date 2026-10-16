@@ -19,3 +19,4 @@ packages/mail/fixtures/private/
 
 # Logs
 *.log
+worker-configuration.d.ts
