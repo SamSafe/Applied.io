@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { createAuth } from "./auth";
+import { createAuth, enabledProviders } from "./auth";
 import { type AppEnv, requireUser } from "./http";
 import { applications, events } from "./routes/applications";
 import { insights } from "./routes/insights";
@@ -10,6 +10,7 @@ export const app = new Hono<AppEnv>().basePath("/api");
 
 app.on(["GET", "POST"], "/auth/*", (c) => createAuth(c.env).handler(c.req.raw));
 app.get("/health", (c) => c.json({ ok: true }));
+app.get("/config", (c) => c.json({ providers: enabledProviders(c.env) }));
 app.get("/me", requireUser, (c) => c.json({ user: c.get("user") }));
 
 app.route("/applications", applications);

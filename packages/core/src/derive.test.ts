@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { derive, liveEvents } from "./derive";
+import { derive, liveEvents, unseenEvents } from "./derive";
 import { AppBuilder, daysAgo, NOW } from "./testing";
 import { DAY_MS } from "./time";
 import { DEFAULT_SETTINGS } from "./types";
@@ -20,6 +20,47 @@ describe("liveEvents", () => {
   it("breaks occurredAt ties by recordedAt", () => {
     const app = new AppBuilder("a").applied(10).noted(3, "n1").noted(3, "n2").build();
     expect(liveEvents(app.events).map((e) => e.id)).toEqual(["a-1", "n1", "n2"]);
+  });
+});
+
+describe("unseenEvents", () => {
+  const withEmail = () => {
+    const app = new AppBuilder("a").applied(10).advanced("screen", 5, "s").noted(4, "n").build();
+    // Mark the screen step and the note as email-originated, recorded at NOW + seq ms.
+    return app.events.map((e) =>
+      e.id === "s" || e.id === "n" ? { ...e, origin: "email" as const } : e,
+    );
+  };
+
+  it("counts email events recorded after the last visit", () => {
+    expect(unseenEvents(withEmail(), null).map((e) => e.id)).toEqual(["s", "n"]);
+    expect(unseenEvents(withEmail(), daysAgo(1)).map((e) => e.id)).toEqual(["s", "n"]);
+  });
+
+  it("ignores everything recorded before the last visit", () => {
+    const later = new Date(NOW.getTime() + 60_000).toISOString();
+    expect(unseenEvents(withEmail(), later)).toEqual([]);
+  });
+
+  it("never counts manual events or voided ones", () => {
+    const events = withEmail();
+    expect(
+      unseenEvents(
+        events.filter((e) => e.origin === "manual"),
+        null,
+      ),
+    ).toEqual([]);
+    const voided = [
+      ...events,
+      {
+        ...events[0],
+        id: "v",
+        type: "voided" as const,
+        voidsEventId: "s",
+        origin: "manual" as const,
+      },
+    ];
+    expect(unseenEvents(voided as typeof events, null).map((e) => e.id)).toEqual(["n"]);
   });
 });
 

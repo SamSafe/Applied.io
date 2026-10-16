@@ -1,0 +1,1 @@
+ALTER TABLE `application` ADD `seen_at` text;

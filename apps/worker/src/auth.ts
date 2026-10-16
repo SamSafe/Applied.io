@@ -13,6 +13,8 @@ export function createAuth(env: Env) {
     secret: env.BETTER_AUTH_SECRET,
     baseURL: env.BETTER_AUTH_URL,
     basePath: "/api/auth",
+    // The Vite dev server (another origin) must be trusted for CSRF checks and callback URLs.
+    trustedOrigins: env.TRUSTED_ORIGINS ? env.TRUSTED_ORIGINS.split(",") : [],
     database: drizzleAdapter(getDb(env), { provider: "sqlite", schema }),
     socialProviders: {
       ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
@@ -46,3 +48,12 @@ export function createAuth(env: Env) {
 }
 
 export type Auth = ReturnType<typeof createAuth>;
+
+/** Sign-in methods available in this environment, for the sign-in screen. */
+export function enabledProviders(env: Env): ("magic-link" | "google" | "microsoft")[] {
+  return [
+    "magic-link",
+    ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? (["google"] as const) : []),
+    ...(env.MICROSOFT_CLIENT_ID && env.MICROSOFT_CLIENT_SECRET ? (["microsoft"] as const) : []),
+  ];
+}

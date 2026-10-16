@@ -1,4 +1,12 @@
-import { type Derived, derive, OUTCOMES, STAGES, type Stage, toMs } from "@apptracker/core";
+import {
+  type Derived,
+  derive,
+  OUTCOMES,
+  STAGES,
+  type Stage,
+  toMs,
+  unseenEvents,
+} from "@apptracker/core";
 import { Hono } from "hono";
 import { z } from "zod";
 import { getDb } from "../db/client";
@@ -10,6 +18,7 @@ import {
   findEventApplication,
   getApplication,
   listApplications,
+  markSeen,
   type StoredApplication,
   updateFacts,
 } from "../repo/applications";
@@ -65,7 +74,7 @@ const EventBody = z.discriminatedUnion("type", [
 ]);
 
 const ListQuery = z.object({
-  status: z.enum(["open", "closed", "ghosted"]).optional(),
+  status: z.enum(["open", "updates", "ghosted", "closed"]).optional(),
   stage: z.enum(STAGES).optional(),
   q: z.string().trim().max(200).optional(),
 });
@@ -89,19 +98,37 @@ applications.get("/", async (c) => {
   const now = new Date();
   const needle = q?.toLowerCase();
 
-  const rows = apps
-    .map((app) => ({ app, derived: derive(app, now, settings) }))
-    .filter(({ app, derived }) => {
+  const all = apps.map((app) => ({ app, derived: derive(app, now, settings) }));
+  const hasUpdates = ({ app }: (typeof all)[number]) =>
+    unseenEvents(app.events, app.seenAt).length > 0;
+  const counts = {
+    all: all.length,
+    open: all.filter((r) => r.derived.status.state === "open").length,
+    updates: all.filter(hasUpdates).length,
+    ghosted: all.filter((r) => r.derived.isStale).length,
+    closed: all.filter((r) => r.derived.status.state === "closed").length,
+  };
+
+  const rows = all
+    .filter((row) => {
+      const { app, derived } = row;
       if (status === "open" && derived.status.state !== "open") return false;
-      if (status === "closed" && derived.status.state !== "closed") return false;
+      if (status === "updates" && !hasUpdates(row)) return false;
       if (status === "ghosted" && !derived.isStale) return false;
+      if (status === "closed" && derived.status.state !== "closed") return false;
       if (stage && derived.maxStage !== stage) return false;
       if (needle && !`${app.company} ${app.position}`.toLowerCase().includes(needle)) return false;
       return true;
     })
     .sort((a, b) => toMs(b.derived.lastActivityAt) - toMs(a.derived.lastActivityAt));
 
-  return c.json({ applications: rows.map(({ app, derived }) => summary(app, derived)) });
+  return c.json({ counts, applications: rows.map(({ app, derived }) => summary(app, derived)) });
+});
+
+/** Marks every application as seen (the "Mark all seen" action). */
+applications.post("/seen", async (c) => {
+  await markSeen(getDb(c.env), c.get("userId"), null, new Date());
+  return c.body(null, 204);
 });
 
 applications.post("/", async (c) => {
@@ -119,6 +146,11 @@ applications.post("/", async (c) => {
 applications.get("/:id", async (c) => {
   const detail = await loadDetail(c.env, c.get("userId"), c.req.param("id"));
   return detail ? c.json({ application: detail }) : notFound(c);
+});
+
+applications.post("/:id/seen", async (c) => {
+  const found = await markSeen(getDb(c.env), c.get("userId"), c.req.param("id"), new Date());
+  return found ? c.body(null, 204) : notFound(c);
 });
 
 applications.patch("/:id", async (c) => {
@@ -189,6 +221,7 @@ async function loadDetail(env: Env, userId: string, id: string) {
   if (!app) return null;
   const derived = derive(app, new Date(), settings);
   const voided = new Set(app.events.flatMap((e) => (e.type === "voided" ? [e.voidsEventId] : [])));
+  const unseen = new Set(unseenEvents(app.events, app.seenAt).map((e) => e.id));
   return {
     ...summary(app, derived),
     reqNumber: app.reqNumber,
@@ -202,11 +235,12 @@ async function loadDetail(env: Env, userId: string, id: string) {
         (a, b) =>
           toMs(a.occurredAt) - toMs(b.occurredAt) || toMs(a.recordedAt) - toMs(b.recordedAt),
       )
-      .map((e) => ({ ...e, voided: voided.has(e.id) })),
+      .map((e) => ({ ...e, voided: voided.has(e.id), unseen: unseen.has(e.id) })),
   };
 }
 
 function summary(app: StoredApplication, derived: Derived) {
+  const unseen = new Set(unseenEvents(app.events, app.seenAt).map((e) => e.id));
   return {
     id: app.id,
     company: app.company,
@@ -219,5 +253,21 @@ function summary(app: StoredApplication, derived: Derived) {
     status: derived.status,
     lastActivityAt: derived.lastActivityAt,
     isStale: derived.isStale,
+    updates: unseen.size,
+    /** The steps the tracking bar draws: live events except notes, in time order. */
+    track: derived.live.flatMap((e) =>
+      e.type === "noted"
+        ? []
+        : [
+            {
+              id: e.id,
+              at: e.occurredAt,
+              type: e.type,
+              stage: e.type === "advanced" ? e.stage : null,
+              outcome: e.type === "closed" ? e.outcome : null,
+              unseen: unseen.has(e.id),
+            },
+          ],
+    ),
   };
 }

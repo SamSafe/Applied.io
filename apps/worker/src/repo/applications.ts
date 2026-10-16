@@ -112,6 +112,25 @@ export async function updateFacts(
   return rows.length > 0;
 }
 
+/** Marks one application, or every application when `id` is null, as seen at `now`. */
+export async function markSeen(
+  db: Db,
+  userId: string,
+  id: string | null,
+  now: Date,
+): Promise<boolean> {
+  const where =
+    id === null
+      ? eq(application.userId, userId)
+      : and(eq(application.id, id), eq(application.userId, userId));
+  const rows = await db
+    .update(application)
+    .set({ seenAt: now.toISOString() })
+    .where(where)
+    .returning({ id: application.id });
+  return id === null || rows.length > 0;
+}
+
 export async function deleteApplication(db: Db, userId: string, id: string): Promise<boolean> {
   const rows = await db
     .delete(application)

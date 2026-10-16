@@ -4,6 +4,8 @@ interface OptionalSecrets {
   GOOGLE_CLIENT_SECRET?: string;
   MICROSOFT_CLIENT_ID?: string;
   MICROSOFT_CLIENT_SECRET?: string;
+  /** Comma-separated extra origins Better Auth should trust (local Vite dev server). */
+  TRUSTED_ORIGINS?: string;
 }
 interface Env extends OptionalSecrets {}
 declare namespace Cloudflare {

@@ -18,7 +18,8 @@
   "vars": {
     "ENVIRONMENT": "development",
     "INBOUND_DOMAIN": "in.localhost",
-    "BETTER_AUTH_URL": "http://localhost:8787"
+    "BETTER_AUTH_URL": "http://localhost:8787",
+    "TRUSTED_ORIGINS": "http://localhost:5173"
   },
   "d1_databases": [
     {

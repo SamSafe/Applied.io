@@ -107,6 +107,8 @@ export const application = sqliteTable(
     notes: text("notes"),
     createdVia: text("created_via", { enum: ["manual", "email"] }).notNull(),
     createdAt: text("created_at").notNull(),
+    /** When the user last opened this application; email events recorded later are "new". */
+    seenAt: text("seen_at"),
   },
   (t) => [
     index("application_user_idx").on(t.userId),

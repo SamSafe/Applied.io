@@ -43,6 +43,15 @@ export function liveEvents(events: readonly AppEvent[]): AppEvent[] {
   return events.filter((e) => e.type !== "voided" && !voided.has(e.id)).sort(compareEvents);
 }
 
+/**
+ * Events the user hasn't seen yet: live, email-originated, and recorded after `seenAt`.
+ * Steps the user recorded by hand are never news to them.
+ */
+export function unseenEvents(events: readonly AppEvent[], seenAt: string | null): AppEvent[] {
+  const since = seenAt === null ? -Infinity : toMs(seenAt);
+  return liveEvents(events).filter((e) => e.origin === "email" && toMs(e.recordedAt) > since);
+}
+
 export function derive(app: Application, now: Date, settings: Settings): Derived {
   const live = liveEvents(app.events);
 

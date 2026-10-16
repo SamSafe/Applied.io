@@ -1,4 +1,8 @@
+import { env } from "cloudflare:workers";
+import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
+import { getDb } from "../src/db/client";
+import { application, event } from "../src/db/schema";
 import { call, signIn } from "./helpers";
 
 type Detail = {
@@ -260,5 +264,81 @@ describe("insights", () => {
     const ranged = (await send("GET", `/api/stats?since=${encodeURIComponent(daysAgo(7))}`)).body
       .stats;
     expect(ranged.applications).toBe(1);
+  });
+});
+
+describe("updates since last visit", () => {
+  /** Simulates the email pipeline (M3–M4) recording a step on an application. */
+  const emailStep = async (applicationId: string, stage: "screen" | "interview") => {
+    const db = getDb(env);
+    const [app] = await db.select().from(application).where(eq(application.id, applicationId));
+    await db.insert(event).values({
+      id: `email-${stage}-${applicationId}`,
+      applicationId,
+      userId: app?.userId as string,
+      type: "advanced",
+      stage,
+      occurredAt: daysAgo(1),
+      recordedAt: new Date().toISOString(),
+      origin: "email",
+      certainty: "high",
+    });
+  };
+
+  type ListBody = {
+    counts: Record<string, number>;
+    applications: (Detail & {
+      updates: number;
+      track: { type: string; stage: string | null; unseen: boolean }[];
+    })[];
+  };
+  const list = async (qs = "") => (await send("GET", `/api/applications${qs}`)).body as ListBody;
+
+  it("flags email steps until the application is opened", async () => {
+    const a = await create({ company: "Acme", position: "Engineer", appliedAt: daysAgo(10) });
+    await create({ company: "Globex", position: "Analyst", appliedAt: daysAgo(5) });
+    await emailStep(a.id, "screen");
+
+    let body = await list();
+    expect(body.counts).toEqual({ all: 2, open: 2, updates: 1, ghosted: 0, closed: 0 });
+    const row = body.applications.find((r) => r.id === a.id);
+    expect(row?.updates).toBe(1);
+    expect(row?.track.map((t) => [t.type, t.stage, t.unseen])).toEqual([
+      ["applied", null, false],
+      ["advanced", "screen", true],
+    ]);
+    expect((await list("?status=updates")).applications.map((r) => r.id)).toEqual([a.id]);
+
+    const detail = (await send("GET", `/api/applications/${a.id}`)).body.application;
+    expect(detail.events.find((e: { stage?: string }) => e.stage === "screen").unseen).toBe(true);
+
+    expect((await send("POST", `/api/applications/${a.id}/seen`)).status).toBe(204);
+    body = await list();
+    expect(body.counts.updates).toBe(0);
+    expect(body.applications.find((r) => r.id === a.id)?.updates).toBe(0);
+  });
+
+  it("never counts steps the user recorded by hand", async () => {
+    const a = await create({ company: "Acme", position: "Engineer" });
+    await send("POST", `/api/applications/${a.id}/events`, { type: "advanced", stage: "screen" });
+    expect((await list()).counts.updates).toBe(0);
+  });
+
+  it("marks everything seen at once", async () => {
+    const a = await create({ company: "Acme", position: "Engineer", appliedAt: daysAgo(9) });
+    const b = await create({ company: "Globex", position: "Analyst", appliedAt: daysAgo(9) });
+    await emailStep(a.id, "screen");
+    await emailStep(b.id, "interview");
+    expect((await list()).counts.updates).toBe(2);
+    expect((await send("POST", "/api/applications/seen")).status).toBe(204);
+    expect((await list()).counts.updates).toBe(0);
+  });
+
+  it("scopes seen to the signed-in user", async () => {
+    const a = await create({ company: "Acme", position: "Engineer" });
+    const mallory = await signIn("mallory@example.test");
+    expect((await send("POST", `/api/applications/${a.id}/seen`, undefined, mallory)).status).toBe(
+      404,
+    );
   });
 });

@@ -8,6 +8,11 @@ describe("api", () => {
     expect(await res.json()).toEqual({ ok: true });
   });
 
+  it("lists the sign-in methods enabled here", async () => {
+    const res = await call("/api/config");
+    expect(await res.json()).toEqual({ providers: ["magic-link"] });
+  });
+
   it("rejects protected routes without a session", async () => {
     expect((await call("/api/me")).status).toBe(401);
     expect((await call("/api/mail-sources")).status).toBe(401);
